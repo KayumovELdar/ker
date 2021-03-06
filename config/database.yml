@@ -7,8 +7,8 @@ default: &default
 
 development:
   <<: *default
-  database: kerel_development
+  database: ker_development
 
 test:
   <<: *default
-  database: kerel_test
+  database: ker_test
