@@ -1,11 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe Question, type: :model do
-  it 'validates present of title' do
-    expect(Question.new(body: "123")).to_not be_valid
-  end
-
-  it 'validates present of body' do
-    expect(Question.new(title: "123")).to_not be_valid
-  end
+  it {should validate_present_of :title }
+  it {should validate_present_of :body }
 end
