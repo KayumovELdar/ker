@@ -6,7 +6,7 @@ feature "Пользователь может залогиниться", %q{
   Я хочу иметь возможность войти в систему
  } do
 
-   given(:user) {User.create!(email: 'user@test.ru', password: '123456') }
+   given(:user) {create(:user) }
    background { visit new_user_session_path }
 
    scenario "пользователь уже есть в системе, он хочет войти" do
