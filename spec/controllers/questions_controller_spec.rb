@@ -1,11 +1,11 @@
 require 'rails_helper'
 
 RSpec.describe QuestionsController, type: :controller do
-  let(:question) {create(:question) }
+  let(:question) {create(:question, user: user) }
   let(:user) {create(:user) }
 
   describe "GET #index" do
-    let(:questions) { create_list(:question, 3) }
+    let(:questions) { create_list(:question, 3, user: user) }
 
     before { get :index}
 
@@ -107,16 +107,14 @@ RSpec.describe QuestionsController, type: :controller do
     end
 
     context 'with invalid attributes' do
-      before { patch :update, params: { id: question, question: attributes_for(:question, :invalid) } }
-
       it 'does not change question' do
-        question.reload
-
-        expect(question.title).to eq 'MyString'
-        expect(question.body).to eq 'MyText'
+        expect { patch :update, params: { id: question, question: attributes_for(:question, :invalid) }
+        }.to_not change { question.reload.updated_at }
       end
 
       it 're-renders edit view' do
+        patch :update, params: { id: question, question: attributes_for(:question, :invalid) }
+
         expect(response).to render_template :edit
       end
     end
@@ -124,7 +122,7 @@ RSpec.describe QuestionsController, type: :controller do
 
   describe 'DELETE #destroy' do
     before { login(user) }
-    let!(:question) { create(:question) }
+    let!(:question) { create(:question, user: user) }
 
     it 'deletes the question' do
       expect { delete :destroy, params: { id: question } }.to change(Question, :count).by(-1)

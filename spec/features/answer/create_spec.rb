@@ -1,20 +1,19 @@
 require "rails_helper"
 
-feature "Пользователь может создать ответ на любой вопрос", %q{
-  Чтобы дать ответ сообществу
-  Как аутентифицированный Пользователь
-  Я хотел бы иметь возможность задать ответ
+feature "The user can create an answer to any question", %q{
+  To give a response to the community
+  As an authenticated User
+  I would like to be able to ask the answer
   } do
     given(:user) {create(:user) }
     given(:question) { create(:question, user:user)}
 
     describe 'Авторизованный пользователь' do
-      before do
+      background do
         sign_in(user)
         visit question_path(question)
       end
       scenario "дает ответ на вопрос" do
-
         fill_in "Заголовок", with: "Ответ_1"
         fill_in "Текст ответа", with: 'text text text'
         click_on "Завершить"
@@ -25,6 +24,8 @@ feature "Пользователь может создать ответ на лю
 
       end
       scenario "дает ответ с ошибкой" do
+        fill_in "Заголовок", with: ""
+        fill_in "Текст ответа", with: 'text text text'
         click_on "Завершить"
 
         expect(page).to have_content 'error(s)'
