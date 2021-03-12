@@ -4,16 +4,14 @@ feature "просмотр всех вопросов", %q{
   Зайдя на основную страницу
   Можно просмотреть весь список вопросов
   } do
-    #создание массива вопросов
-    given!(:questions){create_list(:question, 5) }
-    #проверка созданных вопросов
+
+    given(:user){create(:user)}
+    given!(:questions){create_list(:question, 5,user: user) }
     scenario 'проверка списка вопросов' do
-      #зайти на страницу с списком вопросов
       visit questions_path
-      save_and_open_page
-      #проверка по списку соответствий
-      questions.count.times do |n|
-        expect(page).to have_content "Заголовок вопроса № #{n+1}."
+      questions.each do |question|
+        expect(page).to have_content question.title
+        expect(page).to have_content question.body
       end
     end
   end
