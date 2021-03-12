@@ -1,8 +1,8 @@
 require "rails_helper"
 
-feature "Пользователь может зарегистрироваться", %q{
-  Чтобы задавать вопросы
-  Я хочу иметь возможность зарегистрироваться в систему
+feature "The user can register", %q{
+  To ask questions
+  I want to be able to log in to the system
  } do
 
    background do
@@ -10,7 +10,7 @@ feature "Пользователь может зарегистрироватьс�
      click_on 'Регистрация'
    end
 
-   scenario "Не зарегестрированный пользователь пытается войти" do
+   scenario "An unregistered user is trying to log in" do
      fill_in 'Email', with: "aaa@aaa.ru"
      fill_in 'Password', with: "123456"
      fill_in 'Password confirmation', with: "123456"
@@ -19,7 +19,7 @@ feature "Пользователь может зарегистрироватьс�
 
    end
 
-   scenario "Ошибка не совпанения пороля" do
+   scenario "Password Mismatch Error" do
      fill_in 'Email', with: "aaa@aaa.ru"
      fill_in 'Password', with: "123456"
      click_on 'Sign up'
@@ -27,7 +27,7 @@ feature "Пользователь может зарегистрироватьс�
 
    end
 
-   scenario "Ошибка не правильная почта" do
+   scenario "Error incorrect mail" do
      fill_in 'Email', with: "aaa"
      fill_in 'Password', with: "123456"
      fill_in 'Password confirmation', with: "123456"
@@ -36,7 +36,7 @@ feature "Пользователь может зарегистрироватьс�
 
    end
 
-   scenario "Ошибка пустое поле" do
+   scenario "Error empty field" do
      click_on 'Sign up'
      expect(page).to have_content ("Email can't be blank" or "Password can't be blank")
    end

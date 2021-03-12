@@ -1,9 +1,9 @@
 require "rails_helper"
 
-feature "Пользователь может залогиниться", %q{
-  Чтобы задавать впросы
-  Как не зарегестрированный Пользователь
-  Я хочу иметь возможность войти в систему
+feature "The user can log in", %q{
+  To ask questions
+  As an unregistered User
+  I want to be able to log in
  } do
 
    given(:user) {create(:user) }
@@ -12,7 +12,7 @@ feature "Пользователь может залогиниться", %q{
      click_on 'Вход'
    end
 
-   scenario "пользователь уже есть в системе, он хочет войти" do
+   scenario "the user is already in the system, he wants to log in" do
      fill_in 'Email', with: user.email
      fill_in 'Password', with: user.password
      click_on 'Log in'
@@ -20,7 +20,7 @@ feature "Пользователь может залогиниться", %q{
 
    end
 
-   scenario "пользователя нет в системе, он хочет войти" do
+   scenario "he user is not in the system, he wants to log in" do
      fill_in 'Email', with: 'wrong@test.ru'
      fill_in 'Password', with: '123456'
      click_on 'Log in'

@@ -1,14 +1,14 @@
 require "rails_helper"
 
-feature "Пользователь может создать вопросс", %q{
-  Чтобы получить ответ от сообщества
-  Как аутентифицированный Пользователь
-  Я хотел бы иметь возможность задать вопрос
+feature "The user can create a question", %q{
+  To get a response from the community
+  As an authenticated User
+  I would like to be able to ask a question
   } do
 
    given(:user) {create(:user) }
 
-  describe 'Авторизованный пользователь' do
+  describe 'Authorized User' do
     background do
       sign_in(user)
 
@@ -16,7 +16,7 @@ feature "Пользователь может создать вопросс", %q{
       click_on 'Ask question'
     end
 
-    scenario " задает вопрос" do
+    scenario " asks a question" do
       fill_in 'Title', with: 'Test question'
       fill_in 'Body', with: 'text text text'
       click_on 'Ask'
@@ -26,14 +26,14 @@ feature "Пользователь может создать вопросс", %q{
       expect(page).to have_content 'text text text'
     end
 
-    scenario ' задает вопрос с ошибкой' do
+    scenario ' asks a question with an error' do
       click_on 'Ask'
 
       expect(page).to have_content "Title can't be blank"
     end
   end
 
-  scenario "незарегестрированный пользователь задает вопрос" do
+  scenario "an unregistered user asks a question" do
     visit questions_path
     click_on 'Ask question'
 

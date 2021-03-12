@@ -8,12 +8,12 @@ feature "The user can create an answer to any question", %q{
     given(:user) {create(:user) }
     given(:question) { create(:question, user:user)}
 
-    describe 'Авторизованный пользователь' do
+    describe 'Authorized User' do
       background do
         sign_in(user)
         visit question_path(question)
       end
-      scenario "дает ответ на вопрос" do
+      scenario "gives an answer to the question" do
         fill_in "Заголовок", with: "Ответ_1"
         fill_in "Текст ответа", with: 'text text text'
         click_on "Завершить"
@@ -23,7 +23,7 @@ feature "The user can create an answer to any question", %q{
         expect(page).to have_content 'text text text'
 
       end
-      scenario "дает ответ с ошибкой" do
+      scenario "returns an error response" do
         fill_in "Заголовок", with: ""
         fill_in "Текст ответа", with: 'text text text'
         click_on "Завершить"
@@ -31,7 +31,7 @@ feature "The user can create an answer to any question", %q{
         expect(page).to have_content 'error(s)'
       end
     end
-    scenario " не авторизованный пользователь хочет дать ответ" do
+    scenario " an unauthorized user wants to give an answer" do
       visit question_path(question)
       fill_in "Заголовок", with: "Ответ_1"
       fill_in "Текст ответа", with: 'text text text'
