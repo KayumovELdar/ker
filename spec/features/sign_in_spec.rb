@@ -7,7 +7,10 @@ feature "Пользователь может залогиниться", %q{
  } do
 
    given(:user) {create(:user) }
-   background { visit new_user_session_path }
+   background do
+     visit root_path
+     click_on 'Вход'
+   end
 
    scenario "пользователь уже есть в системе, он хочет войти" do
      fill_in 'Email', with: user.email

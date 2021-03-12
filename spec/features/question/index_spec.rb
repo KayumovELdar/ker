@@ -11,7 +11,7 @@ feature "просмотр всех вопросов", %q{
       #зайти на страницу с списком вопросов
       visit questions_path
       save_and_open_page
-
+      #проверка по списку соответствий
       questions.count.times do |n|
         expect(page).to have_content "Заголовок вопроса № #{n+1}."
       end
