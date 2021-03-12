@@ -1,5 +1,6 @@
 class AnswersController < ApplicationController
   before_action :authenticate_user!
+  before_action :find_answer, only: :destroy
   def new
   end
 
@@ -14,7 +15,15 @@ class AnswersController < ApplicationController
     end
   end
 
+  def destroy
+    @answer.destroy if current_user.author?(@answer)
+    redirect_to question_path(@answer.question), notice: "Your question was successfully created."
+  end
   private
+
+  def find_answer
+    @answer = Answer.find(params[:id])
+  end
 
   def question
     @question||= Question.find(params[:question_id])
