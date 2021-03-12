@@ -1,16 +1,15 @@
-require "rails_helper"
+require 'rails_helper'
 
-feature "The user can log out of the account", %q{
+feature 'The user can log out of the account', '
   To change your account
   I want to be able to log out
- } do
-
-   given(:user) {create(:user) }
+ ' do
+   given(:user) { create(:user) }
    background do
      sign_in(user)
    end
-   scenario "An unregistered user is trying to log in" do
+   scenario 'An unregistered user is trying to log in' do
      click_on 'Выход'
-     expect(page).to have_content "Signed out successfully."
+     expect(page).to have_content 'Signed out successfully.'
    end
  end

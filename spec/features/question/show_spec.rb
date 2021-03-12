@@ -1,11 +1,10 @@
 require 'rails_helper'
 
-feature 'user can see a question and answers to it', %q{
+feature 'user can see a question and answers to it', "
   for convenience
   as an unauthenticated user
   i'd like to see a question and answers together
-} do
-
+" do
   given(:user) { create(:user) }
   given(:question) { create(:question, user: user) }
   given!(:answers) { create_list(:answer, 5, question: question, user: user) }
