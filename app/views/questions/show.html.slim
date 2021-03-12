@@ -1,2 +1,7 @@
+=render "shared/errors", resource: @answer
+
 h1= @question.title
 p= @question.body
+h2= "Ответы пользователей"
+p= render @question.answers
+p= render 'answers/form'
