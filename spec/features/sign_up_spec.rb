@@ -1,9 +1,9 @@
 require 'rails_helper'
 
-feature 'The user can register', %q(
+feature 'The user can register', '
   To ask questions
   I want to be able to log in to the system
- ) do
+ ' do
    background do
      visit root_path
      click_on 'Регистрация'

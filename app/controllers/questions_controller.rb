@@ -40,7 +40,7 @@ class QuestionsController < ApplicationController
       @question.destroy
       redirect_to questions_path, notice: 'Your question was successfully deleted!'
     else
-      redirect_to questions_path, notice: "Your question was not deleted!"
+      redirect_to questions_path, notice: 'Your question was not deleted!'
     end
   end
 

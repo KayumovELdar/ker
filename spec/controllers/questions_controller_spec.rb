@@ -122,10 +122,10 @@ RSpec.describe QuestionsController, type: :controller do
   describe 'DELETE #destroy' do
     context 'User is author' do
       before { login(user) }
-      let!(:question) { create(:question, user: user )}
+      let!(:question) { create(:question, user: user) }
 
       it 'check that answer was deleted' do
-        expect { delete :destroy, params: { id: question} }.to change(Question, :count).by(-1)
+        expect { delete :destroy, params: { id: question } }.to change(Question, :count).by(-1)
       end
 
       it 'redirects to questions list' do
@@ -137,7 +137,7 @@ RSpec.describe QuestionsController, type: :controller do
     context 'Unauthorized user' do
       let!(:question) { create(:question) }
       it 'tries to delete answer' do
-        expect { delete :destroy, params: { id: question} }.to_not change(Question, :count)
+        expect { delete :destroy, params: { id: question } }.to_not change(Question, :count)
       end
     end
   end

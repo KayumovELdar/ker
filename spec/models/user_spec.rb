@@ -4,7 +4,7 @@ RSpec.describe User, type: :model do
   let(:author) { create(:user) }
   let(:user) { create(:user) }
   let(:question) { create(:question, user: author) }
-  let(:answer) { create(:answer,question: question, user: author) }
+  let(:answer) { create(:answer, question: question, user: author) }
 
   it { should have_many(:answers) }
   it { should have_many(:questions) }
@@ -21,6 +21,4 @@ RSpec.describe User, type: :model do
     expect(user.author?(question)).to be_falsy
     expect(user.author?(answer)).to be_falsy
   end
-
-
 end
