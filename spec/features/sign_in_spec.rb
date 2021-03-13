@@ -19,6 +19,7 @@ feature 'The user can log in', '
    end
 
    scenario 'he user is not in the system, he wants to log in' do
+     visit root_path
      fill_in 'Email', with: 'wrong@test.ru'
      fill_in 'Password', with: '123456'
      click_on 'Log in'
