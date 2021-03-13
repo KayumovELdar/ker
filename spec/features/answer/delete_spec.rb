@@ -14,11 +14,17 @@ feature 'user can delete his answer', "
     visit question_path answer.question
     click_on 'Delete answer'
 
-    expect(page).to have_content 'Your qanswer was successfully delete.'
+    expect(page).to have_content 'Your answer was successfully delete.'
   end
 
   scenario "user tries to delete another's question" do
     sign_in(user)
+    visit question_path(question)
+
+    expect(page).to_not have_link 'Delete answer'
+  end
+
+  scenario "an unauthorized user tries to delete" do
     visit question_path(question)
 
     expect(page).to_not have_link 'Delete answer'

@@ -34,6 +34,6 @@ feature 'The user can register', %q(
 
    scenario 'Error empty field' do
      click_on 'Sign up'
-     expect(page).to have_content("Email can't be blank" or "Password can't be blank")
+     expect(page).to have_content("Email can't be blank")
    end
  end

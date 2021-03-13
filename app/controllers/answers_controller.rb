@@ -19,6 +19,7 @@ class AnswersController < ApplicationController
       redirect_to question_path(@answer.question), notice: 'Your answer was successfully delete.'
     else
       redirect_to question_path(@answer.question), notice: "Answer was not delete."
+    end
   end
 
   private

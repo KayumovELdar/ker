@@ -24,4 +24,10 @@ feature 'user can delete his questions', "
 
     expect(page).to_not have_link 'Delete question'
   end
+
+  scenario "an unauthorized user tries to delete" do
+    visit question_path(question)
+
+    expect(page).to_not have_link 'Delete question'
+  end
 end
