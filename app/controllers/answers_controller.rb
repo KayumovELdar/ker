@@ -1,7 +1,6 @@
 class AnswersController < ApplicationController
   before_action :authenticate_user!
   before_action :find_answer, only: :destroy
-  def new; end
 
   def create
     @answer = question.answers.new(answer_params)
@@ -15,8 +14,11 @@ class AnswersController < ApplicationController
   end
 
   def destroy
-    @answer.destroy if current_user.author?(@answer)
-    redirect_to question_path(@answer.question), notice: 'Your qanswer was successfully delete.'
+    if current_user.author?(@answer)
+      @answer.destroy
+      redirect_to question_path(@answer.question), notice: 'Your answer was successfully delete.'
+    else
+      redirect_to question_path(@answer.question), notice: "Answer was not delete."
   end
 
   private
