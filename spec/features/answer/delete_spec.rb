@@ -12,8 +12,14 @@ feature 'user can delete his answer', "
   scenario 'author deletes his answer' do
     sign_in(answer.user)
     visit question_path answer.question
+
+    expect(page).to have_content answer.title
+    expect(page).to have_content answer.body
+
     click_on 'Delete answer'
 
+    expect(page).not_to have_content answer.title
+    expect(page).not_to have_content answer.body
     expect(page).to have_content 'Your answer was successfully delete.'
   end
 

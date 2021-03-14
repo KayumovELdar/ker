@@ -12,10 +12,14 @@ feature 'user can delete his questions', "
   scenario 'author deletes his question' do
     sign_in(author)
     visit question_path(question)
+    expect(page).to have_content question.title
+    expect(page).to have_content question.body
     click_on 'Delete question'
 
+    expect(page).not_to have_content question.title
+    expect(page).not_to have_content question.body
     expect(page).to have_content 'Your question was successfully deleted!'
-    expect(page).to_not have_content question.title
+
   end
 
   scenario "user tries to delete another's question" do

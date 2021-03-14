@@ -6,6 +6,7 @@ feature 'The user can log in', '
   I want to be able to log in
  ' do
    given(:user) { create(:user) }
+
    background do
      visit root_path
      click_on 'Вход'

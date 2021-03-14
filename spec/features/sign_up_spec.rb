@@ -4,6 +4,7 @@ feature 'The user can register', '
   To ask questions
   I want to be able to log in to the system
  ' do
+
    background do
      visit root_path
      click_on 'Регистрация'
