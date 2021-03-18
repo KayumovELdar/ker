@@ -2,9 +2,9 @@
   p= answer.body
   p= answer.title
   -if current_user&.author?(answer)
-    = link_to 'Delete answer', answer_path(answer), remote:true, method: :delete
+    = link_to 'Delete answer', answer_path(answer), method: :delete, data: { confirm: 'Are you sure?' }
     = link_to 'Edit', '#', class: 'edit-answer-link',data: {answer_id: answer.id}
-    =form_with model: answer,class: 'hidden', html:{ id: "edit-answer-#{answer.id}"}, local: false do |f|
-      =f.label :title, 'Your answer'
-      =f.text_area :title
+    =form_with model: answer,class: 'hidden', html:{ id: "edit-answer-#{answer.id}"},local: false do |f|
+      =f.label :body, 'Your answer'
+      =f.text_area :body
       =f.submit 'Save'
