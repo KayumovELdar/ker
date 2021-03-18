@@ -3,14 +3,6 @@ require 'rails_helper'
 RSpec.describe AnswersController, type: :controller do
   let(:question) { create(:question, user: user) }
   let(:user) { create(:user) }
-  describe 'GET #new' do
-    before { login(user) }
-    before { get :new, params: { question_id: question } }
-
-    it 'renders new view' do
-      expect(response).to render_template :new
-    end
-  end
 
   describe 'POST #create' do
     before { login(user) }
@@ -43,9 +35,10 @@ RSpec.describe AnswersController, type: :controller do
   end
 
   describe 'DELETE #destroy' do
+    let!(:answer) { create(:answer, question: question, user: user) }
+
     context 'User is author' do
       before { login(user) }
-      let!(:answer) { create(:answer, question: question, user: user) }
 
       it 'check that answer was deleted' do
         expect { delete :destroy, params: { id: answer } }.to change(Answer, :count).by(-1)
@@ -58,9 +51,70 @@ RSpec.describe AnswersController, type: :controller do
     end
 
     context 'Unauthorized user' do
-      let!(:answer) { create(:answer, question: question) }
+      let(:other_user) { create(:user) }
+      before { login(other_user) }
+
       it 'tries to delete answer' do
         expect { delete :destroy, params: { id: answer } }.to_not change(Answer, :count)
+      end
+    end
+  end
+
+  describe 'PATCH #update' do
+
+    let!(:answer) { create(:answer, question: question, user: user) }
+
+    context 'Authorized user edits his answer with valid attributes' do
+      before { login(user) }
+
+      it 'changes answer attributes' do
+        patch :update, params: {id: answer, answer: {body: 'new body'}}, format: :js
+        answer.reload
+        expect(answer.body).to eq 'new body'
+      end
+
+      it 'renders update view' do
+        patch :update, params: {id: answer, answer: {body: 'new body'}}, format: :js
+        expect(response).to render_template :update
+      end
+    end
+
+    context 'Authorized user edits his answer with invalid attributes' do
+      before { login(user) }
+
+      it 'does not change answer attributes' do
+        expect do
+          patch :update, params: {id: answer, answer: attributes_for(:answer, :invalid)}, format: :js
+        end.to_not change(answer, :body)
+      end
+
+      it 'renders update view' do
+        patch :update, params: {id: answer, answer: attributes_for(:answer, :invalid)}, format: :js
+        expect(response).to render_template :update
+      end
+    end
+
+    context 'User is not author' do
+      let(:other_user) { create(:user) }
+      before { login(:other_user) }
+
+      it "tries to edit others's user answer" do
+        patch :update, params: { id: answer, answer: { body: 'new body' } }, format: :js
+        answer.reload
+        expect(answer.body).to_not eq 'new body'
+      end
+    end
+
+    context 'Unauthorized user' do
+      it 'tries to edit answer' do
+        patch :update, params: {id: answer, answer: {body: 'new body'}}, format: :js
+        answer.reload
+        expect(answer.body).to_not eq 'new body'
+      end
+
+      it 'needs to login in order to proceed' do
+        patch :update, params: { id: answer, answer: { body: 'new body' } }, format: :js
+        expect(response.body).to have_content 'You need to sign in or sign up before continuing.'
       end
     end
   end

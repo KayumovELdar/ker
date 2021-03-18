@@ -1,6 +1,6 @@
 class AnswersController < ApplicationController
   before_action :authenticate_user!
-  before_action :find_answer, only: :destroy
+  before_action :find_answer, only: %i[destroy update]
 
   def create
     @answer = question.answers.new(answer_params)
@@ -10,6 +10,13 @@ class AnswersController < ApplicationController
       redirect_to question, notice: 'Ответ сохранен.'
     else
       render 'questions/show'
+    end
+  end
+
+  def update
+    if current_user&.author?(@answer)
+      @answer.update(answer_params)
+      @question = @answer.question
     end
   end
 
