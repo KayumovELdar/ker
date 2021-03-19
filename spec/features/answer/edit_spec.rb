@@ -26,11 +26,11 @@ feature 'User can his answer', %q{
       end
 
       scenario 'without errors' do
-        click_on 'Edit'
+        click_on 'Обновить'
 
         within '.answers' do
           fill_in :answer_body, with: 'edited answer'
-          click_on 'Save'
+          click_on 'Сохранить'
 
           expect(page).to_not have_content answer.body
           expect(page).to have_content 'edited answer'
@@ -39,11 +39,11 @@ feature 'User can his answer', %q{
       end
 
       scenario 'with errors' do
-        click_on 'Edit'
+        click_on 'Обновить'
 
         within '.answers' do
           fill_in :answer_body, with: ''
-          click_on 'Save'
+          click_on 'Сохранить'
 
           expect(page).to have_content "Body can't be blank"
         end

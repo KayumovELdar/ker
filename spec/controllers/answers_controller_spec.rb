@@ -13,13 +13,13 @@ RSpec.describe AnswersController, type: :controller do
 
       it 'saves a new answer in the database' do
         expect do
-          post :create, params: { question_id: question, answer: attributes_for(:answer) }
+          post :create, params: { question_id: question, answer: attributes_for(:answer) }, format: :js
         end.to change(question.answers, :count).by(1)
       end
 
       it 'redirects to show view' do
-        post :create, params: { question_id: question, answer: attributes_for(:answer) }
-        expect(response).to redirect_to question
+        post :create, params: { question_id: question, answer: attributes_for(:answer) }, format: :js
+        expect(response).to render_template(:create)
       end
     end
 
@@ -27,13 +27,13 @@ RSpec.describe AnswersController, type: :controller do
       it 'does not save the question' do
         expect do
           post :create,
-               params: { question_id: question, answer: attributes_for(:answer, :invalid) }
+               params: { question_id: question, answer: attributes_for(:answer, :invalid) }, format: :js
         end.not_to change(Answer, :count)
       end
 
       it 're-renders new view' do
-        post :create, params: { question_id: question, answer: attributes_for(:answer, :invalid) }
-        expect(response).to render_template 'questions/show'
+        post :create, params: { question_id: question, answer: attributes_for(:answer, :invalid) }, format: :js
+        expect(response).to render_template(:create)
       end
     end
   end
@@ -126,6 +126,45 @@ RSpec.describe AnswersController, type: :controller do
       it 'needs to login in order to proceed' do
         patch :update, params: { id: answer, answer: { body: 'new body' } }, format: :js
         expect(response.body).to have_content 'You need to sign in or sign up before continuing.'
+      end
+    end
+  end
+
+  describe 'PATCH #set_best' do
+    let(:author) { create(:user) }
+    let(:question) { create(:question, user: author)}
+    let(:answer) { create(:answer, question: question, user: author) }
+
+    context 'User is author of question' do
+      before { login(author) }
+
+      it 'set best answer' do
+        patch :set_best, params: { id: answer }, format: :js
+        answer.reload
+        expect(answer.best).to eq true
+      end
+
+      it 'renders set_best view' do
+        patch :set_best, params: { id: answer, answer: { body: 'new body'}, format: :js }
+        expect(response).to render_template :set_best
+      end
+    end
+
+    context 'User is not author of question' do
+      before { login(user) }
+
+      it 'tries to set best answer' do
+        patch :set_best, params: { id: answer }, format: :js
+        answer.reload
+        expect(answer.best).to eq false
+      end
+    end
+
+    context 'Unauthorized user' do
+      it 'tries to set best answer' do
+        patch :set_best, params: { id: answer }, format: :js
+        answer.reload
+        expect(answer.best).to eq false
       end
     end
   end
