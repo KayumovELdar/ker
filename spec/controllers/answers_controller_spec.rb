@@ -1,12 +1,16 @@
 require 'rails_helper'
 
 RSpec.describe AnswersController, type: :controller do
-  let(:question) { create(:question, user: user) }
+
   let(:user) { create(:user) }
+  let(:question) { create(:question, user: user) }
 
   describe 'POST #create' do
+
     before { login(user) }
+
     context 'with valid attributes' do
+
       it 'saves a new answer in the database' do
         expect do
           post :create, params: { question_id: question, answer: attributes_for(:answer) }
@@ -41,21 +45,28 @@ RSpec.describe AnswersController, type: :controller do
       before { login(user) }
 
       it 'check that answer was deleted' do
-        expect { delete :destroy, params: { id: answer } }.to change(Answer, :count).by(-1)
+        expect { delete :destroy, params: { id: answer }, format: :js }.to change(Answer, :count).by(-1)
       end
 
-      it 'redirects to questions list' do
-        delete :destroy, params: { id: answer }
-        expect(response).to redirect_to question_path(question)
+      it 'renders destroy view' do
+        delete :destroy, params: { id: answer },format: :js
+        expect(response).to render_template :destroy
       end
     end
 
-    context 'Unauthorized user' do
+    context 'User is not author' do
       let(:other_user) { create(:user) }
       before { login(other_user) }
 
       it 'tries to delete answer' do
-        expect { delete :destroy, params: { id: answer } }.to_not change(Answer, :count)
+        expect { delete :destroy, params: { id: answer },format: :js }.to_not change(Answer, :count)
+      end
+    end
+
+    context 'Unauthorized user' do
+
+      it 'tries to delete answer' do
+        expect { delete :destroy, params: {id: answer}, format: :js }.to_not change(Answer, :count)
       end
     end
   end

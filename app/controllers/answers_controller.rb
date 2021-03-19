@@ -5,12 +5,7 @@ class AnswersController < ApplicationController
   def create
     @answer = question.answers.new(answer_params)
     @answer.user = current_user
-
-    if @answer.save
-      redirect_to question, notice: 'Ответ сохранен.'
-    else
-      render 'questions/show'
-    end
+    @answer.save
   end
 
   def update
@@ -21,12 +16,7 @@ class AnswersController < ApplicationController
   end
 
   def destroy
-    if current_user.author?(@answer)
-      @answer.destroy
-      redirect_to question_path(@answer.question), notice: 'Your answer was successfully delete.'
-    else
-      redirect_to question_path(@answer.question), notice: 'Answer was not delete.'
-    end
+  @answer.destroy if current_user.author?(@answer)
   end
 
   private
