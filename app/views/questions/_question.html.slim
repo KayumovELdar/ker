@@ -1,3 +1,13 @@
 tr
   td= link_to ("#{question.title}"), question_path(question)
   td= ("#{question.body}")
+  - if current_user&.author?(question)
+    p= link_to 'Обновить', '#', class: 'edit-question-link', data: {question_id: question.id}
+    = form_with model: question, class: 'hidden', html: {id: "edit-question-#{question.id}"}, local: false do |f|
+      = f.label :title, 'Заголовок'
+      = f.text_field :title
+      br
+      = f.label :body, 'Содержание'
+      = f.text_area :body
+      br
+      = f.submit 'Сохранить'
