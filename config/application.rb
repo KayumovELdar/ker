@@ -25,7 +25,6 @@ module Ker
                        helper_specs: false,
                        routing_specs: false,
                        request_specs: false
-
     end
   end
 end

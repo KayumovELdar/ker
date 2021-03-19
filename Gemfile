@@ -16,6 +16,7 @@ gem 'webpacker', '~> 5.0'
 # Turbolinks makes navigating your web application faster. Read more: https://github.com/turbolinks/turbolinks
 gem 'turbolinks', '~> 5'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
+gem 'devise'
 gem 'jbuilder', '~> 2.7'
 gem 'slim-rails'
 # Use Redis adapter to run Action Cable in production
@@ -52,8 +53,9 @@ group :test do
   gem 'capybara', '>= 3.26'
   gem 'selenium-webdriver'
   # Easy installation and use of web drivers to run system tests with browsers
-  gem 'shoulda-matchers'
+  gem 'launchy'
   gem 'rails-controller-testing'
+  gem 'shoulda-matchers'
   gem 'webdrivers'
 end
 
