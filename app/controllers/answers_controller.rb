@@ -1,25 +1,26 @@
 class AnswersController < ApplicationController
   before_action :authenticate_user!
-  before_action :find_answer, only: :destroy
+  before_action :find_answer, only: %i[destroy update set_best]
 
   def create
     @answer = question.answers.new(answer_params)
     @answer.user = current_user
+    @answer.save
+  end
 
-    if @answer.save
-      redirect_to question, notice: 'Ответ сохранен.'
-    else
-      render 'questions/show'
+  def update
+    if current_user&.author?(@answer)
+      @answer.update(answer_params)
+      @question = @answer.question
     end
   end
 
   def destroy
-    if current_user.author?(@answer)
-      @answer.destroy
-      redirect_to question_path(@answer.question), notice: 'Your answer was successfully delete.'
-    else
-      redirect_to question_path(@answer.question), notice: 'Answer was not delete.'
-    end
+    @answer.destroy if current_user.author?(@answer)
+  end
+
+  def set_best
+    @answer.set_best if current_user&.author?(@answer.question)
   end
 
   private

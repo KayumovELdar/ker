@@ -18,7 +18,6 @@ feature 'user can delete his questions', "
 
     expect(page).not_to have_content question.title
     expect(page).not_to have_content question.body
-    expect(page).to have_content 'Your question was successfully deleted!'
 
   end
 
