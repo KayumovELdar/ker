@@ -6,4 +6,6 @@
   br= f.text_field :title, id: :answer_title
   br= f.label :body, "Текст ответа"
   br= f.text_area :body, id: :answer_body
+  br= f.label :files
+  br= f.file_field :files, multiple: true
   = f.submit "Завершить"
