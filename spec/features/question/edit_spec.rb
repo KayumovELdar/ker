@@ -47,16 +47,16 @@ feature 'User can edit his question', %q{
     end
 
     scenario 'edits his question whitn attached files' do
-      click_on 'Обновить'
+      expect(page).to_not have_link 'rails_helper.rb'
+      expect(page).to_not have_link 'spec_helper.rb'
 
       within '.questions' do
+        click_on 'Обновить'
         attach_file 'File',["#{Rails.root}/spec/rails_helper.rb","#{Rails.root}/spec/spec_helper.rb"]
         click_on 'Сохранить'
+        expect(page).to have_link 'rails_helper.rb'
+        expect(page).to have_link 'spec_helper.rb'
       end
-      click_on question.title
-
-      expect(page).to have_link 'rails_helper.rb'
-      expect(page).to have_link 'spec_helper.rb'
     end
 
   end
