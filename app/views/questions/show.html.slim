@@ -8,6 +8,10 @@ p= @question.body
           method: :delete,
           data: { confirm: 'Are you sure?' }
 h2= "Ответы пользователей"
+-if @question.files.attached?
+  -@question.files.each do |file|
+    p= link_to file.filename.to_s, url_for(file)
+    
 .answers
   = render @question.answers
 p= render 'answers/form'
