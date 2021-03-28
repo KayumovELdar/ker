@@ -11,7 +11,14 @@ h2= "Ответы пользователей"
 -if @question.files.attached?
   -@question.files.each do |file|
     p= link_to file.filename.to_s, url_for(file)
-    
+
+.links
+  p Links:
+  ul
+    - @question.links.each do |link|
+      li= link_to link.name, link.url
+
+
 .answers
   = render @question.answers
 p= render 'answers/form'

@@ -5,6 +5,13 @@
         | Лучший ответ:
       p="Пользователь #{answer.user.email}"
       p= answer.body
+
+      .links
+        p Links:
+        ul
+          - answer.links.each do |link|
+          li= link_to link.name, link.url
+
       -if answer.files.attached?
         div class='attachments'
         -answer.files.each do |file|
@@ -27,4 +34,13 @@
           = f.text_area :body, id: :answer_body
           = f.label :files
           = f.file_field :files, multiple: true
+          p Links:
+          p
+            = f.fields_for :links do |l|
+              p
+                = l.label :name, 'Link name'
+                = l.text_field :name
+              p
+                = l.label :url
+                = l.text_field :url
           =f.submit 'Сохранить'
