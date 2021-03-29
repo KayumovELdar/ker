@@ -10,11 +10,13 @@
         p Links:
         ul
           - answer.links.each do |link|
-            li= link_to link.name, link.url
-            - if link.gist_url?
-              script src="#{link.url}.js" width="300" height="300"
-            - else
-              li= link_to link.name, link.url
+            div data-link-id="#{link.id}"
+              - if link.gist_url?
+                script src="#{link.url}.js" width="300" height="300"
+              - else
+                li= link_to link.name, link.url
+              - if current_user&.resource_author?(answer)
+                li= button_to 'Delete link', link_path(answer, link: link), remote: true, method: :delete
 
       -if answer.files.attached?
         div class='attachments'
