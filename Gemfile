@@ -21,6 +21,7 @@ gem 'jbuilder', '~> 2.7'
 gem 'slim-rails'
 gem 'jquery-rails'
 gem 'google-cloud-storage', '~> 1.8', require: false
+gem "cocoon"
 
 # Use Redis adapter to run Action Cable in production
 # gem 'redis', '~> 4.0'
