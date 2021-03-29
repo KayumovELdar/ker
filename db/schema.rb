@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_03_28_171558) do
+ActiveRecord::Schema.define(version: 2021_03_29_152849) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -55,6 +55,15 @@ ActiveRecord::Schema.define(version: 2021_03_28_171558) do
     t.index ["user_id"], name: "index_answers_on_user_id"
   end
 
+  create_table "badges", force: :cascade do |t|
+    t.bigint "question_id", null: false
+    t.string "title"
+    t.text "image_url"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["question_id"], name: "index_badges_on_question_id"
+  end
+
   create_table "links", force: :cascade do |t|
     t.string "name"
     t.string "url"
@@ -90,5 +99,6 @@ ActiveRecord::Schema.define(version: 2021_03_28_171558) do
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "answers", "questions"
   add_foreign_key "answers", "users"
+  add_foreign_key "badges", "questions"
   add_foreign_key "questions", "users"
 end
