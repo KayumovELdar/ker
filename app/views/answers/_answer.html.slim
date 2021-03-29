@@ -10,7 +10,7 @@
         p Links:
         ul
           - answer.links.each do |link|
-          li= link_to link.name, link.url
+            li= link_to link.name, link.url
 
       -if answer.files.attached?
         div class='attachments'
@@ -34,8 +34,9 @@
           = f.text_area :body, id: :answer_body
           = f.label :files
           = f.file_field :files, multiple: true
-          div id="links"
+          #links
             = f.fields_for :links do |l|
-              = render 'shared/link_fields', f: l
-            = link_to_add_association 'add link', f, :links, after: true,  partial: 'shared/link_fields'
+            .add_link
+              = link_to_add_association 'add link', f, :links, partial: 'shared/link_fields'
+          = f.submit 'Save answer'
           =f.submit 'Сохранить'

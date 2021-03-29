@@ -13,7 +13,7 @@ feature 'User can add links to answer', %q{
   given(:gist_url2) {'https://gist.github.com/KayumovELdar/a6c15d72980c611879f8bbb6dee93d09'}
 
   scenario 'User can add multiple links when give an answer ', js: true do
-    sign_in(author)
+    sign_in(user)
     visit question_path(question)
     fill_in 'answer_body', with: 'My answer'
 
