@@ -11,6 +11,10 @@
         ul
           - answer.links.each do |link|
             li= link_to link.name, link.url
+            - if link.gist_url?
+              script src="#{link.url}.js" width="300" height="300"
+            - else
+              li= link_to link.name, link.url
 
       -if answer.files.attached?
         div class='attachments'
