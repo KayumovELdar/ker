@@ -13,7 +13,7 @@ class Answer < ApplicationRecord
     transaction do
       question.answers.update_all(best: false)
       update!(best: true)
-      question.badge.badge_the_user(user) if question.badge.present?
+      question.badge&.badge_the_user(user)
     end
   end
 end
