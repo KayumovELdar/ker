@@ -22,6 +22,10 @@ h2= "Ответы пользователей"
 -if @question.files.attached?
   -@question.files.each do |file|
     p= link_to file.filename.to_s, url_for(file)
+- if @question.badge.present?
+  div class="badge"
+  = "Badge for best answer:"
+  = image_tag(@question.badge.image_url, size: "50x50")
 .answers
   = render @question.answers
 p= render 'answers/form'

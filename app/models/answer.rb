@@ -9,7 +9,7 @@ class Answer < ApplicationRecord
 
   validates :title, :body, presence: true
 
-  def set_best
+  def set_best!
     transaction do
       question.answers.update_all(best: false)
       update!(best: true)

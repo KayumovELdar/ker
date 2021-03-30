@@ -4,6 +4,7 @@
       -if answer.best
         | Лучший ответ:
       p="Пользователь #{answer.user.email}"
+      p= answer.title
       p= answer.body
 
       .links
@@ -27,7 +28,7 @@
               = link_to 'Удалить файл ответа', file_path(file), method: :delete, remote: true
 
       - if current_user&.author?(answer.question) && !answer.best
-        p= link_to 'Выбрать лучшее', set_best_answer_path(answer),method: :patch
+        p= link_to 'Выбрать лучшее', set_best_answer_path(answer),method: :patch, remote: true
         ="|"
       -if current_user&.author?(answer)
         = link_to 'Удалить', answer_path(answer), method: :delete

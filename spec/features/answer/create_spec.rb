@@ -20,9 +20,11 @@ feature 'The user can create an answer to any question', '
         fill_in 'Текст ответа', with: 'text text text'
         click_on 'Завершить'
 
-        expect(page).to have_content 'Ответ сохранен.'
-        expect(page).to have_content 'Ответ_1'
-        expect(page).to have_content 'text text text'
+        expect(current_path).to eq question_path(question)
+        within '.answers' do
+          expect(page).to have_content 'Ответ_1'
+          expect(page).to have_content 'text text text'
+        end
       end
 
       scenario 'returns an error response' do
