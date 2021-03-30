@@ -5,6 +5,7 @@ RSpec.describe User, type: :model do
   let(:user) { create(:user) }
   let(:question) { create(:question, user: author) }
 
+  it { should have_many(:badge) }
   it { should have_many(:answers) }
   it { should have_many(:questions) }
   it { should validate_presence_of :email }

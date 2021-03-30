@@ -1,0 +1,5 @@
+ul
+  - @badges.each do |badge|
+    li
+      = badge.title
+      br= image_tag(badge.image_url, size: "50x50")
