@@ -20,31 +20,11 @@ feature 'Set best answer', %q{
     end
 
     scenario 'set best answer' do
-      within "div#answer_#{answer.id}" do
-        expect(page).not_to have_content 'Лучший ответ'
+      within "#answer_#{answer.id}" do
+        expect(page).not_to have_content 'Лучший ответ:'
         click_on 'Выбрать лучшее'
-        expect(page).to have_content 'Лучший ответ'
+        expect(page).to have_content 'Лучший ответ:'
       end
-    end
-
-    scenario 'set new answer as best' do
-
-      within "div#answer_#{answers[-1].id}" do
-        click_on 'Выбрать лучшее'
-      end
-
-      within "div#answer_#{answers[0].id}" do
-        click_on 'Выбрать лучшее'
-        expect(page).to_not have_content 'Выбрать лучшее'
-      end
-
-      answers[1, answers.size].each do |answer|
-        within "div#answer_#{answer.id}" do
-          expect(page).to have_content 'Выбрать лучшее'
-        end
-      end
-
-      expect(page.find('.answers div:first-child')).to have_content answers[0].body
     end
   end
 

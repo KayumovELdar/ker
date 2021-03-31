@@ -55,6 +55,21 @@ feature 'User can his answer', %q{
         expect(page).to have_link 'spec_helper.rb'
       end
 
+      scenario 'with deleting link' do
+
+        answer.links.build( linkable: question, name: "youtube_link", url: "https://www.youtube.com/")
+        answer.save
+        answer.reload
+
+        visit question_path(question)
+
+        within '.answer-links' do
+          click_button 'Delete link'
+
+          expect(page).to_not have_link "youtube_link"
+        end
+      end
+
       scenario 'with errors' do
         click_on 'Обновить'
 
@@ -66,6 +81,8 @@ feature 'User can his answer', %q{
         end
       end
     end
+
+
 
     scenario "tries to edit either user's answer" do
       sign_in(user)

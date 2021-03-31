@@ -73,4 +73,16 @@ feature 'User can edit his question', %q{
 
     expect(page).to_not have_link 'Обновить'
   end
+
+  scenario 'with deleting links' do
+    question.links.build( linkable: question, name: "youtube_link", url: "https://www.youtube.com/")
+    question.save
+    question.reload
+
+    click_on question.title
+
+    click_button 'Delete link'
+
+    expect(page).to_not have_link "youtube_link"
+  end
 end
