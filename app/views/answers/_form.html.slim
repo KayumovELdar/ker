@@ -1,7 +1,7 @@
 .answer-errors
   =render 'shared/errors', resource: @answer
 
-= form_with model: [@question, @answer], class: 'new-answer', local: false do |f|
+= form_with model: [@question, @answer], class: 'new-answer', data: { type: html} do |f|
   br= f.label :title, "Заголовок"
   br= f.text_field :title, id: :answer_title
   br= f.label :body, "Текст ответа"

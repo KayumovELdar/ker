@@ -26,6 +26,6 @@ h2= "Ответы пользователей"
   div class="badge"
   = "Badge for best answer:"
   = image_tag(@question.badge.image_url, size: "50x50")
-.answers
-  = render @question.answers
+  .answers
+    = render @question.answers
 p= render 'answers/form'
