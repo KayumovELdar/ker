@@ -2,6 +2,8 @@
 
 h1= @question.title
 p= @question.body
+p="рейтинг #{@question.rating}"
+= render 'shared/vote', resource: @question
 .links
   p Links:
   ul
@@ -28,4 +30,5 @@ h2= "Ответы пользователей"
   = image_tag(@question.badge.image_url, size: "50x50")
   .answers
     = render @question.answers
-p= render 'answers/form'
+- if current_user.present?
+  p= render 'answers/form'

@@ -6,11 +6,20 @@ Rails.application.routes.draw do
     get :badges, on: :member
   end
 
-  resources :questions do
-    resources :answers, shallow: true do
+  concern :voted do
+    member do
+      patch :vote_up
+      patch :vote_down
+      delete :cancel_vote
+    end
+  end
+
+  resources :questions, concerns: :voted do
+    resources :answers, concerns: :voted, shallow: true do
       patch :set_best, on: :member
     end
   end
+
   resources :files, only: [:destroy]
 
   resources :links, only: [:destroy]
