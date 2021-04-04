@@ -1,4 +1,5 @@
 require 'rails_helper'
+require Rails.root.join "spec/cpntrollers/concerns/voted_spec.rb"
 
 RSpec.describe QuestionsController, type: :controller do
 
