@@ -6,6 +6,8 @@
       p="Пользователь #{answer.user.email}"
       p= answer.title
       p= answer.body
+      p="рейтинг #{answer.rating}"
+      = render 'shared/vote', resource: answer
 
       .links
         p Links:

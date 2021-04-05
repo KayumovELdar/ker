@@ -1,4 +1,4 @@
-=render "shared/errors", resource: @answer
+-=render "shared/errors", resource: @answer
 
 h1= @question.title
 p= @question.body
@@ -26,6 +26,7 @@ h2= "Ответы пользователей"
   div class="badge"
   = "Badge for best answer:"
   = image_tag(@question.badge.image_url, size: "50x50")
-.answers
-  = render @question.answers
-p= render 'answers/form'
+  .answers
+    = render @question.answers
+- if current_user.present?
+  p= render 'answers/form'
