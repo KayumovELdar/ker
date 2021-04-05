@@ -1,9 +1,7 @@
-=render "shared/errors", resource: @answer
+-=render "shared/errors", resource: @answer
 
 h1= @question.title
 p= @question.body
-p="рейтинг #{@question.rating}"
-= render 'shared/vote', resource: @question
 .links
   p Links:
   ul
