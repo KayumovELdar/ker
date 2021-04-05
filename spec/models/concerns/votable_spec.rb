@@ -34,11 +34,18 @@ shared_examples_for "votable" do
     expect(votable.rating).to eq -1
   end
 
-
   it '#rating' do
     votable.up(user1)
     votable.down(user1)
     votable.up(user2)
     expect(votable.rating).to eq 2
+  end
+  it 'rating after delete user' do
+    votable.up(user1)
+    votable.up(user2)
+    expect(votable.rating).to eq 2
+    votable.cancel_vote_of(user1)
+    expect(votable.rating).to eq 1
+
   end
 end

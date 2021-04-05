@@ -14,7 +14,7 @@ module Votable
   end
 
   def cancel_vote_of(user)
-    votes.destroy_all if votes.exists?(user: user)
+    votes.find_by(user: user).destroy
   end
 
   def rating
