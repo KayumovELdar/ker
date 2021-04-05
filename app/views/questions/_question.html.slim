@@ -1,6 +1,9 @@
-tr
-  td= link_to ("#{question.title}"), question_path(question)
-  td= ("#{question.body}")
+div id = "question_#{question.id}"
+  p= link_to ("#{question.title}"), question_path(question)
+  p= ("#{question.body}")
+  .rating
+    p="рейтинг #{question.rating}"
+  = render 'shared/vote', resource: question
   -if question.files.attached?
     -question.files.each do |file|
       div id="file-#{file.id}"
