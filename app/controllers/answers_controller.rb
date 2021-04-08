@@ -1,6 +1,6 @@
 class AnswersController < ApplicationController
 
-  include Voted
+
 
   before_action :authenticate_user!
   before_action :find_question, only: :create
@@ -15,7 +15,7 @@ class AnswersController < ApplicationController
       if @answer.save
         format.json { render json: @answer }
       else
-        format.json do
+       format.json do
           render json: @answer.errors.full_messages, status: :unprocessable_entity
         end
       end

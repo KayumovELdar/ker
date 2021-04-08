@@ -16,8 +16,9 @@
       = render 'shared/link_fields', f: l
     = link_to_add_association 'add link', f, :links, after: true,  partial: 'shared/link_fields'
 
-    p Badge:
-    .Badge
-      = f.fields_for :badge do |badge|
-      = render 'shared/badge_fields', f: badge
+  p Badge:
+  .Badge
+    = f.fields_for :badge do |r|
+    = render 'shared/badge_fields', f: r
+
   p = f.submit 'Ask'

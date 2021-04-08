@@ -20,7 +20,7 @@ feature 'User can vote for a answer', %q{
 
     scenario 'votes up for question' do
 
-      within "#answer_#{answer.id}" do do
+      within "#answer_#{answer.id}" do
         click_on 'nice'
         within '.rating' do
           expect(page).to have_content 'рейтинг 1'
@@ -30,7 +30,7 @@ feature 'User can vote for a answer', %q{
 
     scenario 'votes down for question' do
 
-      within "#answer_#{answer.id}" do do
+      within "#answer_#{answer.id}" do
         click_on 'badly'
         within '.rating' do
           expect(page).to have_content 'рейтинг -1'
@@ -73,4 +73,5 @@ feature 'User can vote for a answer', %q{
         expect(page).to_not have_content 'Cancel vote'
       end
     end
+  end
 end
