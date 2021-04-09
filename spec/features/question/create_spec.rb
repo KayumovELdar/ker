@@ -48,7 +48,6 @@ feature 'The user can create a question', '
     scenario "question appears on another user's page" do
       Capybara.using_session('user') do
         sign_in(user)
-
         visit questions_path
       end
 
@@ -59,16 +58,16 @@ feature 'The user can create a question', '
       Capybara.using_session('user') do
         click_on 'Ask question'
 
-        fill_in 'Заголовок', with: 'qTitle'
-        fill_in 'Содержание', with: 'qBody'
-        click_on 'Сохранить'
-        expect(page).to have_content 'Your question successfully created.'
-        expect(page).to have_content 'qTitle'
-        expect(page).to have_content 'qBody'
+        fill_in 'Title', with: 'Test question'
+        fill_in 'Body', with: 'text text text'
+        click_on 'Ask'
+        expect(page).to have_content 'Test question'
+        expect(page).to have_content 'text text text'
       end
 
       Capybara.using_session('guest') do
-        expect(page).to have_link 'qTitle'
+        expect(page).to have_content 'Test question'
+        expect(page).to have_content 'text text text'
       end
     end
   end

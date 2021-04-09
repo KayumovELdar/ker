@@ -1,10 +1,13 @@
 class AnswersController < ApplicationController
 
-
+  include Voted
 
   before_action :authenticate_user!
   before_action :find_question, only: :create
   before_action :find_answer, only: %i[destroy update set_best]
+
+  after_action :publish_answer, only: [:create]
+  after_action :set_answer_gon, only: [:create]
 
   def create
     @answer = @question.answers.new(answer_params)
@@ -14,13 +17,14 @@ class AnswersController < ApplicationController
     respond_to do |format|
       if @answer.save
         format.json { render json: @answer }
-      else
-       format.json do
+     else
+        format.json do
           render json: @answer.errors.full_messages, status: :unprocessable_entity
         end
       end
     end
   end
+
 
   def update
     if current_user&.author?(@answer)
@@ -49,5 +53,15 @@ class AnswersController < ApplicationController
 
   def answer_params
     params.require(:answer).permit(:title, :body, files: [], links_attributes: [:name, :url])
+  end
+
+  def publish_answer
+    return if @answer.errors.any?
+    ActionCable.server.broadcast(
+      "questions/#{params[:question_id]}/answers",answer: @answer, user_id: current_user.id)
+  end
+
+  def set_answer_gon
+    gon.answer_id=answer.id
   end
 end

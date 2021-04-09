@@ -4,8 +4,9 @@ class QuestionsController < ApplicationController
 
   before_action :authenticate_user!, except: %i[index show]
   before_action :load_question, only: %i[show edit update destroy ]
-  after_action :publish_question, only: [:create]
 
+  after_action :publish_question, only: [:create]
+  after_action :set_question_gon, only: [:create]
   def index
     @questions = Question.all
   end
@@ -61,6 +62,10 @@ class QuestionsController < ApplicationController
 
   def publish_question
     return if @question.errors.any?
-    ActionCable.server.broadcast'questions',question: @question
+    ActionCable.server.broadcast('questions',{ question: @question, user_id: current_user.id })
+  end
+
+  def set_question_gon
+    gon.question_id = question.id
   end
 end
