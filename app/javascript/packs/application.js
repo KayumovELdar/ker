@@ -10,6 +10,8 @@ import "channels"
 import "./answers.js"
 import "./questions.js"
 import "./votes.js"
+import "./comments.js"
+import "/comments"
 require("jquery")
 require("handlebars")
 import "cocoon"

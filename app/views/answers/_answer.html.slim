@@ -49,3 +49,6 @@
               = link_to_add_association 'add link', f, :links, partial: 'shared/link_fields'
           = f.submit 'Save answer'
           =f.submit 'Сохранить'
+          = render "comments/comments", commentable: answer
+
+          = render "comments/new", commentable: answer
