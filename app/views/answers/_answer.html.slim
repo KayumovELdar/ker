@@ -4,15 +4,19 @@
       -if answer.best
         | Лучший ответ:
       p="Пользователь #{answer.user.email}"
+      p= answer.title
       p= answer.body
       - if current_user&.author?(answer.question) && !answer.best
-        p= link_to 'Выбрать лучшее', set_best_answer_path(answer),method: :patch
+        p= link_to 'Выбрать лучшее', set_best_answer_path(answer),remote: true,method: :patch
         ="|"
       -if current_user&.author?(answer)
-        = link_to 'Удалить', answer_path(answer), method: :delete
+        = link_to 'Удалить', answer_path(answer),remote: true, method: :delete
         ="|"
         = link_to 'Обновить', '#', class: 'edit-answer-link',data: {answer_id: answer.id}
         =form_with model: answer,class: 'hidden', html:{ id: "edit-answer-#{answer.id}"}, local: false do |f|
-          =f.label :body, 'Ваш ответ: '
-          =f.text_area :body, id: :answer_body
+
+          =f.label :title, 'Ваш заголовок:'
+          =f.text_area :title
+          =f.label :body, 'Ваш ответ:'
+          =f.text_area :body
           =f.submit 'Сохранить'

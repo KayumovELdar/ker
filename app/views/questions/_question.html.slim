@@ -1,14 +1,15 @@
-tr
-  td= link_to ("#{question.title}"), question_path(question)
-  td= ("#{question.body}")
+div id = "question_#{question.id}"
+  p= link_to ("#{question.title}"), question_path(question)
+  p= ("#{question.body}")
   - if current_user&.author?(question)
     p= link_to 'Delete',question_path(question), method: :delete, data: {confirm: 'Are you sure?'}
     p= link_to 'Обновить', '#', class: 'edit-question-link', data: {question_id: question.id}
     = form_with model: question, class: 'hidden', html: {id: "edit-question-#{question.id}"}, local: false do |f|
-      = f.label :title, 'Заголовок'
-      = f.text_field :title
+
+      = f.label 'Заголовок'
+      = f.text_field :title, id: :question_title
       br
-      = f.label :body, 'Содержание'
-      = f.text_area :body
+      = f.label 'Содержание'
+      = f.text_area :body, id: :question_body
       br
       = f.submit 'Сохранить'

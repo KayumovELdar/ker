@@ -20,7 +20,6 @@ feature 'The user can create an answer to any question', '
         fill_in 'Текст ответа', with: 'text text text'
         click_on 'Завершить'
 
-        expect(page).to have_content 'Ответ сохранен.'
         expect(page).to have_content 'Ответ_1'
         expect(page).to have_content 'text text text'
       end
@@ -36,10 +35,6 @@ feature 'The user can create an answer to any question', '
 
     scenario ' an unauthorized user wants to give an answer' do
       visit question_path(question)
-      fill_in 'Заголовок', with: 'Ответ_1'
-      fill_in 'Текст ответа', with: 'text text text'
-      click_on 'Завершить'
-
-      expect(page).to have_content 'You need to sign in or sign up before continuing.'
+      expect(page).to_not have_content 'Текст ответа'
     end
   end

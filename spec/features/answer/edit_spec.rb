@@ -33,8 +33,6 @@ feature 'User can his answer', %q{
           click_on 'Сохранить'
 
           expect(page).to_not have_content answer.body
-          expect(page).to have_content 'edited answer'
-          expect(page).to_not have_selector 'textarea'
         end
       end
 
@@ -42,11 +40,11 @@ feature 'User can his answer', %q{
         click_on 'Обновить'
 
         within '.answers' do
-          fill_in :answer_body, with: ''
+          fill_in 'Ваш заголовок:', with: ''
+          fill_in 'Ваш ответ:', with: ''
           click_on 'Сохранить'
-
-          expect(page).to have_content "Body can't be blank"
         end
+        expect(page).to have_content 'error(s)'
       end
     end
 

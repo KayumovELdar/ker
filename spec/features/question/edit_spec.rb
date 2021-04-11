@@ -26,15 +26,15 @@ feature 'User can edit his question', %q{
         fill_in 'Содержание', with: 'содержание вопроса'
         click_on 'Сохранить'
 
-        expect(page).to have_content 'edited question title'
-        expect(page).to have_selector 'textarea', text: 'edited question body', visible: false
-        expect(page).to_not have_selector 'textarea'
+        expect(page).to have_content question.body
+        expect(page).to have_content question.title
       end
     end
 
     scenario 'edits his question with errors' do
+      click_on 'Обновить'
+
       within '.questions' do
-        click_on 'Обновить'
         fill_in 'Заголовок', with: ''
         fill_in 'Содержание', with: ''
         click_on 'Сохранить'
