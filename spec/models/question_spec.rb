@@ -4,6 +4,8 @@ require Rails.root.join "spec/models/concerns/votable_spec.rb"
 RSpec.describe Question, type: :model do
 
   it_behaves_like "votable"
+  it_behaves_like "commentable"
+
 
   it { should belong_to(:user) }
   it { should have_many(:answers).dependent(:destroy) }

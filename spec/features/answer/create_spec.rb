@@ -35,6 +35,34 @@ feature 'The user can create an answer to any question', '
         expect(page).to have_content 'error(s)'
       end
 
+      context 'multiple session', js: true do
+        scenario "answer appears on another user' page" do
+          Capybara.using_session('user') do
+            sign_in(user)
+            visit question_path(question)
+          end
+
+          Capybara.using_session('guest') do
+            visit question_path(question)
+          end
+
+          Capybara.using_session('user') do
+
+            fill_in 'Заголовок', with: 'Ответ_1'
+            fill_in 'Текст ответа', with: 'text text text'
+            click_on 'Завершить'
+
+            expect(page).to have_content 'Ответ_1'
+            expect(page).to have_content 'text text text'
+          end
+
+          Capybara.using_session('guest') do
+            expect(page).to have_content 'Ответ_1'
+            expect(page).to have_content 'text text text'
+          end
+        end
+      end
+
       scenario ' gives an answer with attached file' do
         fill_in 'Заголовок', with: 'Ответ_1'
         fill_in 'Текст ответа', with: 'text text text'

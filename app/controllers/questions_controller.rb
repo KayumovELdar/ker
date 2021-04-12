@@ -5,6 +5,8 @@ class QuestionsController < ApplicationController
   before_action :authenticate_user!, except: %i[index show]
   before_action :load_question, only: %i[show edit update destroy ]
 
+  after_action :publish_question, only: [:create]
+  after_action :set_question_gon, only: [:create]
   def index
     @questions = Question.all
   end
@@ -12,10 +14,10 @@ class QuestionsController < ApplicationController
   def show
     @answer = @question.answers.new
     @answer.links.new
+    @comment = @question.comments.build(user: current_user)
   end
 
   def new
-    @question = Question.new
     @question.links.build
     @question.build_badge
   end
@@ -57,5 +59,14 @@ class QuestionsController < ApplicationController
                                       files: [],
                                       links_attributes: [:name, :url],
                                       badge_attributes: [:title, :image_url] )
+  end
+
+  def publish_question
+    return if @question.errors.any?
+    ActionCable.server.broadcast('questions',{ question: @question, user_id: current_user.id })
+  end
+
+  def set_question_gon
+    gon.question_id = question.id
   end
 end

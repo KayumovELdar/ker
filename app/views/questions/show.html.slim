@@ -18,6 +18,8 @@ p= @question.body
           question_path(@question),
           method: :delete,
           data: { confirm: 'Are you sure?' }
+= render "comments/comments", commentable: @question
+= render "comments/new", commentable: @question
 h2= "Ответы пользователей"
 -if @question.files.attached?
   -@question.files.each do |file|
