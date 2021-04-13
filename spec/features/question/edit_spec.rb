@@ -13,18 +13,17 @@ feature 'User can edit his question', %q{
   describe 'Author of question', js: true do
 
     background do
-      sign_in author
+      sign_in (author)
       visit questions_path
     end
 
     scenario 'edits his question' do
-      click_on 'Обновить'
 
       within '.questions' do
-
-        fill_in 'Заголовок', with: 'заголовок вопроса'
-        fill_in 'Содержание', with: 'содержание вопроса'
-        click_on 'Сохранить'
+        click_on 'Edit'
+        fill_in 'Edit title', with: 'заголовок вопроса'
+        fill_in 'Edit body', with: 'содержание вопроса'
+        click_on 'Save'
 
         expect(page).to have_content question.body
         expect(page).to have_content question.title
@@ -32,12 +31,12 @@ feature 'User can edit his question', %q{
     end
 
     scenario 'edits his question with errors' do
-      click_on 'Обновить'
 
       within '.questions' do
-        fill_in 'Заголовок', with: ''
-        fill_in 'Содержание', with: ''
-        click_on 'Сохранить'
+        click_on 'Edit'
+        fill_in 'Edit title', with: ''
+        fill_in 'Edit body', with: ''
+        click_on 'Save'
 
         expect(page).to have_content "Title can't be blank"
         expect(page).to have_content "Body can't be blank"
@@ -50,12 +49,12 @@ feature 'User can edit his question', %q{
     sign_in user
     visit questions_path
 
-    expect(page).to_not have_link 'Обновить'
+    expect(page).to_not have_link 'Edit'
   end
 
   scenario 'Unauthenticated user can not edit answer' do
     visit questions_path
 
-    expect(page).to_not have_link 'Обновить'
+    expect(page).to_not have_link 'Edit'
   end
 end

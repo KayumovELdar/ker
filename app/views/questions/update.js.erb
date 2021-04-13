@@ -1,5 +1,4 @@
-$('.question-errors').html("<%= j render 'shared/errors', resource: @question %>");
-
-<% unless @question.errors.present? %>
-  $('#question_'+ <%= @question.id %>).html("<%= j render @question %>");
+$("[data-question-errors=" + <%= @question.id %> + "]").html("<%= render 'shared/errors', resource: @question%>")
+<% if !@question.errors.present? %>
+  $("[data-question-id=" + <%= @question.id %> + "]").html('<%= j (render @question) %>')
 <% end %>
