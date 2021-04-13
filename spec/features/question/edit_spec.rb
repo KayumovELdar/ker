@@ -21,8 +21,9 @@ feature 'User can edit his question', %q{
 
       within '.questions' do
         click_on 'Edit'
-        fill_in 'Edit title', with: 'заголовок вопроса'
-        fill_in 'Edit body', with: 'содержание вопроса'
+        save_and_open_page
+        fill_in :question_title, with: 'заголовок вопроса'
+        fill_in :question_body, with: 'содержание вопроса'
         click_on 'Save'
 
         expect(page).to have_content question.body
@@ -34,8 +35,8 @@ feature 'User can edit his question', %q{
 
       within '.questions' do
         click_on 'Edit'
-        fill_in 'Edit title', with: ''
-        fill_in 'Edit body', with: ''
+        fill_in :question_title, with: ''
+        fill_in :question_body, with: ''
         click_on 'Save'
 
         expect(page).to have_content "Title can't be blank"
