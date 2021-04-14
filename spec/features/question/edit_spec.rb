@@ -21,7 +21,7 @@ feature 'User can edit his question', %q{
 
       within '.questions' do
         click_on 'Edit'
-        save_and_open_page
+        #save_and_open_page
         fill_in :question_title, with: 'заголовок вопроса'
         fill_in :question_body, with: 'содержание вопроса'
         click_on 'Save'
@@ -44,6 +44,20 @@ feature 'User can edit his question', %q{
         expect(page).to have_selector 'textarea'
       end
     end
+    scenario 'edits his question whitn attached files' do
+      click_on 'Edit'
+
+      within '.questions' do
+        attach_file 'File',["#{Rails.root}/spec/rails_helper.rb","#{Rails.root}/spec/spec_helper.rb"]
+        click_on 'Save'
+      end
+      click_on question.title
+
+      expect(page).to have_link 'rails_helper.rb'
+      expect(page).to have_link 'spec_helper.rb'
+    end
+
+
   end
 
   scenario "Authenticated user tries to edit other user's question", js: true do

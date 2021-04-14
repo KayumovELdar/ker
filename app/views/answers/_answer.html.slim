@@ -6,6 +6,11 @@
       p="Пользователь #{answer.user.email}"
       p= answer.title
       p= answer.body
+      - if answer.files.attached?
+        - answer.files.each do |file|
+          div data-attached-file-id="#{file.id}"
+            p= link_to file.filename.to_s, url_for(file), target: :_blank
+            = button_to 'Delete file', attachment_path(answer, file_id: file), remote: true, method: :delete
       - if current_user&.author?(answer.question) && !answer.best
         p= link_to 'Выбрать лучшее', set_best_answer_path(answer),remote: true,method: :patch
         ="|"
@@ -15,8 +20,10 @@
         = link_to 'Обновить', '#', class: 'edit-answer-link',data: {answer_id: answer.id}
         =form_with model: answer,class: 'hidden', html:{ id: "edit-answer-#{answer.id}"}, local: false do |f|
 
-          =f.label :title, 'Ваш заголовок:'
-          =f.text_area :title
-          =f.label :body, 'Ваш ответ:'
-          =f.text_area :body
+          br=f.label :title, 'Ваш заголовок:'
+          br=f.text_area :title
+          br=f.label :body, 'Ваш ответ:'
+          br=f.text_area :body
+          br= f.label :files
+          br= f.file_field :files, multiple: true
           =f.submit 'Сохранить'
