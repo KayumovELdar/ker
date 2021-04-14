@@ -15,4 +15,9 @@
         = f.text_area :body, id: :question_body
         br= f.label :files
         = f.file_field :files, multiple: true
+        p Links:
+        div id="links"
+          = f.fields_for :links do |link|
+            = render 'shared/link_fields', f: link
+          = link_to_add_association 'add links', f, :links, after: true, partial: 'shared/link_fields'
         br= f.submit 'Save'

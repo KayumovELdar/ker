@@ -10,6 +10,7 @@ import "channels"
 import "./answers.js"
 import "./questions.js"
 require("jquery")
+require("@nathanvda/cocoon")
 
 Rails.start()
 Turbolinks.start()

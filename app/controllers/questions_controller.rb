@@ -1,5 +1,5 @@
 class QuestionsController < ApplicationController
-  before_action :authenticate_user!, except: %i[index show]
+  before_action :authenticate_user!, except: %i[index show create update destroy]
   before_action :question, except: %i[create]
 
   def index
@@ -8,11 +8,14 @@ class QuestionsController < ApplicationController
 
   def show
     @answer = Answer.new
+    @answer.links.build
   end
 
   def edit; end
 
   def new
+    @question.links.build
+    @question.build_reward
   end
 
   def create
@@ -29,7 +32,7 @@ class QuestionsController < ApplicationController
   end
 
   def destroy
-    if current_user.author?(@question)
+    if current_user&.author?(@question)
       @question.destroy
       redirect_to questions_path, notice: 'Your question was successfully deleted!'
     else
@@ -44,6 +47,6 @@ class QuestionsController < ApplicationController
   end
 
   def question_params
-    params.require(:question).permit(:title, :body, files: [])
+    params.require(:question).permit(:title, :body, files: [], links_attributes: [:name, :url], reward_attributes: [:title, :img_url])
   end
 end

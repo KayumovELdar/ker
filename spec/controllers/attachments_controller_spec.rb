@@ -11,7 +11,7 @@ RSpec.describe AttachmentsController, type: :controller do
     context 'User is an author of resource' do
       it "deletes resource's file" do
         login(user)
-        delete :destroy, params: { id: question, file_id: question.files.first.id }, format: :js
+        delete :destroy, params: { id: question, file: question.files.first.id }, format: :js
 
         expect(question.files.all).to be_empty
       end
@@ -21,7 +21,7 @@ RSpec.describe AttachmentsController, type: :controller do
       let(:not_author) { create(:user) }
       it "does not deletes resource's file" do
         login(not_author)
-        delete :destroy, params: { id: question, file_id: question.files.first.id }, format: :js
+        delete :destroy, params: { id: question, file: question.files.first.id }, format: :js
 
         expect(question.files.all).to_not be_empty
       end
@@ -29,7 +29,7 @@ RSpec.describe AttachmentsController, type: :controller do
 
     context 'Unauthenticated user' do
       it "does not deletes resource's file" do
-        delete :destroy, params: { id: question, file_id: question.files.first.id }, format: :js
+        delete :destroy, params: { id: question, file: question.files.first.id }, format: :js
 
         expect(question.files.all).to_not be_empty
       end

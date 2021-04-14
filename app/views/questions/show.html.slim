@@ -1,5 +1,27 @@
 h1= @question.title
 p= @question.body
+- if @question.reward.present?
+  p Reward:
+  p= @question.reward.title
+  = image_tag(@question.reward.img_url, size: "20x20")
+.question-links
+  - if @question.links.present?
+    p Links:
+    ul
+      - @question.links.each do |l|
+        div data-link-id="#{l.id}"
+          - if l.gist_url?
+            script src="#{l.url}.js" width="300" height="300"
+          - else
+            li= link_to l.name, l.url, target: :_blank
+          - if current_user&.author?(@question)
+            li= button_to 'Delete link', link_path(@question, link: l), remote: true, method: :delete
+
+- if @question.files.attached?
+  - @question.files.each do |file|
+    div data-attached-file-id="#{file.id}"
+      p= link_to file.filename.to_s, url_for(file), target: :_blank
+      = button_to 'Delete file', attachment_path(@question, file: file), remote: true, method: :delete
 
 - if current_user&.author?(@question)
   p= link_to 'Delete question',
@@ -7,11 +29,7 @@ p= @question.body
           method: :delete,
           data: { confirm: 'Are you sure?' }
 h2= "Ответы пользователей"
-- if @question.files.attached?
-  - @question.files.each do |file|
-    div data-attached-file-id="#{file.id}"
-      p= link_to file.filename.to_s, url_for(file), target: :_blank
-      = button_to 'Delete file', attachment_path(@question, file_id: file), remote: true, method: :delete
+
 .answers
   = render @question.answers
 - if current_user.present?
