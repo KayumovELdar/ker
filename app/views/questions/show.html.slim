@@ -33,8 +33,14 @@
             question_path(@question),
             method: :delete,
             data: { confirm: 'Are you sure?' }
+  .comments
+    - if @question.comments.present?
+      = "Comments:"
+      = render 'comments/comments', resource: @question
+  .new-comment
+    - if current_user
+      = render 'comments/new', resource: @question
 h2= "Ответы пользователей"
-
 .answers
   = render @question.answers
 - if current_user.present?

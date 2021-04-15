@@ -15,13 +15,8 @@ RSpec.describe AnswersController, type: :controller do
 
       it 'saves a new answer in the database' do
         expect do
-          post :create, params: { question_id: question, answer: attributes_for(:answer) }, format: :json
+          post :create, params: { question_id: question, answer: attributes_for(:answer) }, format: :js
         end.to change(question.answers, :count).by(1)
-      end
-
-      it 'redirects to show view' do
-        post :create, params: { question_id: question, answer: attributes_for(:answer) }, format: :json
-        expect(response.status).to eq 200
       end
     end
 
@@ -29,13 +24,8 @@ RSpec.describe AnswersController, type: :controller do
       it 'does not save the question' do
         expect do
           post :create,
-               params: { question_id: question, answer: attributes_for(:answer, :invalid) }, format: :json
+               params: { question_id: question, answer: attributes_for(:answer, :invalid) }, format: :js
         end.not_to change(Answer, :count)
-      end
-
-      it 're-renders new view' do
-        post :create, params: { question_id: question, answer: attributes_for(:answer, :invalid) }, format: :json
-        expect(response.status).to eq 422
       end
     end
   end
@@ -48,11 +38,6 @@ RSpec.describe AnswersController, type: :controller do
 
       it 'check that answer was deleted' do
         expect { delete :destroy, params: { id: answer }, format: :js }.to change(Answer, :count).by(-1)
-      end
-
-      it 'renders destroy view' do
-        delete :destroy, params: { id: answer },format: :js
-        expect(response).to render_template :destroy
       end
     end
 

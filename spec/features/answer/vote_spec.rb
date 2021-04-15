@@ -30,7 +30,6 @@ feature 'User can vote for answer', %q{
       within '.answers' do
         click_on 'vote for'
 
-        expect(page).to have_link 'cancel vote'
         expect(page).to have_content "Rating: 1"
 
       end

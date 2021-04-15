@@ -1,9 +1,6 @@
-- if resource.votes.present?
-  div class='rating-result'
-    = "Rating: #{resource.rating}"
-- else
-  div class='rating-result'
-    = "Rating: 0"
+
+div class='rating-result'
+  = "Rating: #{resource.rating}"
 
 - if current_user.present?
   -if !current_user.author?(resource)

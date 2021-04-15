@@ -1,15 +1,18 @@
 
 - if answer.persisted?
-    div id = "answer_#{answer.id}"
+    div data-answer-id="#{answer.id}"
       -if answer.best
         | Лучший ответ:
       p="Пользователь #{answer.user.email}"
       p= answer.title
       p= answer.body
+      div data-errors-answer-id="#{answer.id}"
 
-
-      .answer-links
-        - if answer.links.present?
+      .rating
+        = render 'shared/rating', resource: answer
+        .rating-errors
+      - if answer.links.present?
+        .answer-links
           p Links:
           ul
             - answer.links.each do |l|
@@ -26,11 +29,20 @@
           div data-attached-file-id="#{file.id}"
             p= link_to file.filename.to_s, url_for(file), target: :_blank
             = button_to 'Delete file', attachment_path(answer, file: file), remote: true, method: :delete
+      .comments
+        - if answer.comments.present?
+          = "Comments:"
+          = render 'comments/comments', resource: answer
+      .new-comment
+        - if current_user
+          - @comment = answer.comments.build(user: current_user)
+          = render 'comments/new', resource: answer
       - if current_user&.author?(answer.question) && !answer.best
         p= link_to 'Выбрать лучшее', set_best_answer_path(answer),remote: true,method: :patch
         ="|"
       -if current_user&.author?(answer)
-        = link_to 'Удалить', answer_path(answer),remote: true, method: :delete
+        div data-answer-id="#{answer.id}"
+        = link_to 'Удалить', answer_path(answer),remote: true, method: :delete, class: 'delete-answer-link', data: { confirm: 'Sure?', nswer_id: answer.id }
         ="|"
         = link_to 'Обновить', '#', class: 'edit-answer-link',data: {answer_id: answer.id}
         =form_with model: answer,class: 'hidden', html:{ id: "edit-answer-#{answer.id}"}, local: false do |f|
@@ -47,6 +59,3 @@
               = render 'shared/link_fields', f: link
             = link_to_add_association 'add links', f, :links, after: true, partial: 'shared/link_fields'
           =f.submit 'Сохранить'
-        .rating
-          = render 'shared/rating', resource: answer
-          .rating-errors

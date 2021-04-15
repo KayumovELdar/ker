@@ -3,6 +3,7 @@ class QuestionsController < ApplicationController
 
   before_action :authenticate_user!, except: %i[index show create update destroy]
   before_action :question, except: %i[create]
+  after_action :publish_question, only: %i[create]
 
   def index
     @questions = Question.all
@@ -11,6 +12,7 @@ class QuestionsController < ApplicationController
   def show
     @answer = Answer.new
     @answer.links.build
+    @comment = Comment.new
   end
 
   def edit; end
@@ -50,5 +52,20 @@ class QuestionsController < ApplicationController
 
   def question_params
     params.require(:question).permit(:title, :body, files: [], links_attributes: [:name, :url], reward_attributes: [:title, :img_url])
+  end
+
+  def questions
+    Question.all.map do |question|
+      [question.id, question.title]
+    end
+  end
+
+  def publish_question
+    return if @question.errors.any?
+    ActionCable.server.broadcast(
+      'questions',
+      title: @question.title,
+      id: @question.id
+    )
   end
 end

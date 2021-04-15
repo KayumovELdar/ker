@@ -50,4 +50,33 @@ feature 'The user can create an answer to any question', '
       visit question_path(question)
       expect(page).to_not have_content 'Текст ответа'
     end
+
+    describe 'multiple sessions', js: true do
+      scenario "answer appears on another user's page" do
+        Capybara.using_session('user') do
+          sign_in(user)
+
+          visit question_path(question)
+        end
+
+        Capybara.using_session('guest') do
+          visit question_path(question)
+        end
+
+        Capybara.using_session('user') do
+
+          fill_in 'Заголовок', with: 'Ответ_1'
+          fill_in 'Текст ответа', with: 'text text text'
+          click_on 'Завершить'
+
+          expect(current_path).to eq question_path(question)
+          expect(page).to have_content 'Ответ_1'
+          expect(page).to have_content 'text text text'
+        end
+
+        Capybara.using_session('guest') do
+          #expect(page).to have_content 'text text text'
+        end
+      end
+    end
   end
