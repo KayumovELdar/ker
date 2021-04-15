@@ -47,3 +47,6 @@
               = render 'shared/link_fields', f: link
             = link_to_add_association 'add links', f, :links, after: true, partial: 'shared/link_fields'
           =f.submit 'Сохранить'
+        .rating
+          = render 'shared/rating', resource: answer
+          .rating-errors

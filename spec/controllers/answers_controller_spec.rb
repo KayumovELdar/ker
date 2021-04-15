@@ -1,6 +1,8 @@
 require 'rails_helper'
+require Rails.root.join "spec/controllers/concerns/voted_controller_spec.rb"
 
 RSpec.describe AnswersController, type: :controller do
+  it_behaves_like "voted"
 
   let(:user) { create(:user) }
   let(:question) { create(:question, user: user) }
@@ -13,13 +15,13 @@ RSpec.describe AnswersController, type: :controller do
 
       it 'saves a new answer in the database' do
         expect do
-          post :create, params: { question_id: question, answer: attributes_for(:answer) }, format: :js
+          post :create, params: { question_id: question, answer: attributes_for(:answer) }, format: :json
         end.to change(question.answers, :count).by(1)
       end
 
       it 'redirects to show view' do
-        post :create, params: { question_id: question, answer: attributes_for(:answer) }, format: :js
-        expect(response).to render_template(:create)
+        post :create, params: { question_id: question, answer: attributes_for(:answer) }, format: :json
+        expect(response.status).to eq 200
       end
     end
 
@@ -27,13 +29,13 @@ RSpec.describe AnswersController, type: :controller do
       it 'does not save the question' do
         expect do
           post :create,
-               params: { question_id: question, answer: attributes_for(:answer, :invalid) }, format: :js
+               params: { question_id: question, answer: attributes_for(:answer, :invalid) }, format: :json
         end.not_to change(Answer, :count)
       end
 
       it 're-renders new view' do
-        post :create, params: { question_id: question, answer: attributes_for(:answer, :invalid) }, format: :js
-        expect(response).to render_template(:create)
+        post :create, params: { question_id: question, answer: attributes_for(:answer, :invalid) }, format: :json
+        expect(response.status).to eq 422
       end
     end
   end

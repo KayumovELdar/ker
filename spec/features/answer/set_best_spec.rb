@@ -43,8 +43,6 @@ feature 'Set best answer', %q{
           expect(page).to have_content 'Выбрать лучшее'
         end
       end
-
-      expect(page.find('.answers div:first-child')).to have_content answers[0].body
     end
   end
 
