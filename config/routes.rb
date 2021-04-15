@@ -1,34 +1,28 @@
 Rails.application.routes.draw do
   devise_for :users
-  root to: 'questions#index'
-
-  resources :users, only: %i[] do
-    get :badges, on: :member
-  end
 
   concern :votable do
     member do
-      patch :vote_up
-      patch :vote_down
+      post :vote_for
+      post :vote_against
       delete :cancel_vote
     end
   end
 
-  concern :commentable do
-    resources :comments, shallow: true, only: :create
-  end
+  root to: 'questions#index'
 
-  resources :questions, concerns: [:commentable]  do
-    resources :answers, concerns: %i[:votable commentable] , shallow: true do
+  resources :questions, concerns: %i[votable] do
+    resources :answers, shallow: true, concerns: %i[votable] do
       patch :set_best, on: :member
+      resources :comments, shallow: true, only: %i[create]
     end
+    resources :comments, shallow: true, only: %i[create]
   end
 
-
-
-  resources :files, only: [:destroy]
-
-  resources :links, only: [:destroy]
+  resources :attachments, only: %i[destroy]
+  resources :links, only: %i[destroy]
+  resources :rewards, only: :index
 
   mount ActionCable.server => '/cable'
+
 end

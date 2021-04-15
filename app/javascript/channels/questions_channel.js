@@ -1,26 +1,22 @@
 import consumer from "./consumer"
 
-$(document).on('turbolinks:load',function() {
-  let template = require('./templates/question.hbs')
-  consumer.subscriptions.create("QuestionsChannel", {
+if (window.questionChannel == undefined ) {
+  window.questionChannel = consumer.subscriptions.create("QuestionsChannel", {
     connected() {
-      console.log('Connected to questions')
+      console.log("connected questions")
+      this.perform('subscribed')
+      // Called when the subscription is ready for use on the server
     },
 
     disconnected() {
+      // Called when the subscription has been terminated by the server
     },
 
     received(data) {
-      if (gon.user_id != data.user_id)
-      {
-        const Handlebars = require("handlebars");
-        let resource = Handlebars.compile(template);
-        $('.questions').append(resource(data))
-      }
-    }
-
-    speak: function() {
-      return this.perform('speak');
+      let question = ""
+      question = "<p>" + "<a href=" + "/questions/" + data.question.id + ">" + data.question.title +"</a>" + "</p>"
+      $('.questions').append(question)
+      // Called when there's incoming data on the websocket for this channel
     }
   });
-});
+}

@@ -13,51 +13,50 @@ feature 'User can edit his question', %q{
   describe 'Author of question', js: true do
 
     background do
-      sign_in author
+      sign_in (author)
       visit questions_path
     end
 
     scenario 'edits his question' do
-      click_on 'Обновить'
 
       within '.questions' do
+        click_on 'Edit'
+        #save_and_open_page
+        fill_in :question_title, with: 'заголовок вопроса'
+        fill_in :question_body, with: 'содержание вопроса'
+        click_on 'Save'
 
-        fill_in 'Заголовок', with: 'заголовок вопроса'
-        fill_in 'Содержание', with: 'содержание вопроса'
-        click_on 'Сохранить'
-
-        expect(page).to have_content 'edited question'
-        expect(page).to_not have_selector 'textarea'
+        expect(page).to have_content question.body
+        expect(page).to have_content question.title
       end
     end
 
     scenario 'edits his question with errors' do
-        click_on 'Обновить'
 
       within '.questions' do
-
-        fill_in 'Заголовок', with: ''
-        fill_in 'Содержание', with: ''
-        click_on 'Сохранить'
+        click_on 'Edit'
+        fill_in :question_title, with: ''
+        fill_in :question_body, with: ''
+        click_on 'Save'
 
         expect(page).to have_content "Title can't be blank"
         expect(page).to have_content "Body can't be blank"
         expect(page).to have_selector 'textarea'
       end
     end
-
     scenario 'edits his question whitn attached files' do
-      expect(page).to_not have_link 'rails_helper.rb'
-      expect(page).to_not have_link 'spec_helper.rb'
+      click_on 'Edit'
 
       within '.questions' do
-        click_on 'Обновить'
         attach_file 'File',["#{Rails.root}/spec/rails_helper.rb","#{Rails.root}/spec/spec_helper.rb"]
-        click_on 'Сохранить'
-        expect(page).to have_link 'rails_helper.rb'
-        expect(page).to have_link 'spec_helper.rb'
+        click_on 'Save'
       end
+      click_on question.title
+
+      expect(page).to have_link 'rails_helper.rb'
+      expect(page).to have_link 'spec_helper.rb'
     end
+
 
   end
 
@@ -65,24 +64,12 @@ feature 'User can edit his question', %q{
     sign_in user
     visit questions_path
 
-    expect(page).to_not have_link 'Обновить'
+    expect(page).to_not have_link 'Edit'
   end
 
   scenario 'Unauthenticated user can not edit answer' do
     visit questions_path
 
-    expect(page).to_not have_link 'Обновить'
-  end
-
-  scenario 'with deleting links' do
-    question.links.build( linkable: question, name: "youtube_link", url: "https://www.youtube.com/")
-    question.save
-    question.reload
-
-    click_on question.title
-
-    click_button 'Delete link'
-
-    expect(page).to_not have_link "youtube_link"
+    expect(page).to_not have_link 'Edit'
   end
 end

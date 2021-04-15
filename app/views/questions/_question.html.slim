@@ -1,23 +1,23 @@
-div id = "question_#{question.id}"
-  p= link_to ("#{question.title}"), question_path(question)
-  p= ("#{question.body}")
-  .rating
-    p="рейтинг #{question.rating}"
-  = render 'shared/vote', resource: question
-  -if question.files.attached?
-    -question.files.each do |file|
-      div id="file-#{file.id}"
-        = link_to file.filename.to_s, url_for(file)
-        - if current_user&.author?(question)
-          = link_to 'Удалить файл вопроса', file_path(file), method: :delete, remote: true
-  - if current_user&.author?(question)
-    p= link_to 'Удалить вопрос',question_path(question), method: :delete, data: {confirm: 'Are you sure?'}
-    p= link_to 'Обновить', '#', class: 'edit-question-link', data: {question_id: question.id}
-    = form_with model: question, class: 'hidden', html: {id: "edit-question-#{question.id}"}, local: false do |f|
-      br= f.label :title, 'Заголовок'
-      = f.text_field :title
-      br= f.label :body, 'Содержание'
-      = f.text_area :body
-      br= f.label :files
-      = f.file_field :files, multiple: true
-      br= f.submit 'Сохранить'
+- if question.persisted?
+  div data-question-id="#{question.id}"
+    b= link_to ("#{question.title}"), question_path(question)
+
+    div data-question-errors="#{question.id}"
+
+    p= ("#{question.body}")
+    - if current_user&.author?(question)
+      p= link_to 'Delete',question_path(question), method: :delete, data: {confirm: 'Are you sure?'}
+      = link_to 'Edit', '#', class: 'edit-question-link', data: { question_id: question.id }
+      br= form_with model: question, class: "hidden", html: { id: "edit-question-#{question.id}" }, local: false do |f|
+        br= f.label 'Edit title'
+        = f.text_field :title, id: :question_title
+        br= f.label 'Edit body'
+        = f.text_area :body, id: :question_body
+        br= f.label :files
+        = f.file_field :files, multiple: true
+        p Links:
+        div id="links"
+          = f.fields_for :links do |link|
+            = render 'shared/link_fields', f: link
+          = link_to_add_association 'add links', f, :links, after: true, partial: 'shared/link_fields'
+        br= f.submit 'Save'

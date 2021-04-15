@@ -1,9 +1,8 @@
 require 'rails_helper'
-require Rails.root.join "spec/controllers/concerns/voted_spec.rb"
+require Rails.root.join "spec/controllers/concerns/voted_controller_spec.rb"
 
 RSpec.describe AnswersController, type: :controller do
-
-  it_behaves_like 'voted'
+  it_behaves_like "voted"
 
   let(:user) { create(:user) }
   let(:question) { create(:question, user: user) }
@@ -19,11 +18,6 @@ RSpec.describe AnswersController, type: :controller do
           post :create, params: { question_id: question, answer: attributes_for(:answer) }, format: :js
         end.to change(question.answers, :count).by(1)
       end
-
-      it 'redirects to show view' do
-        post :create, params: { question_id: question, answer: attributes_for(:answer) }, format: :js
-        expect(response).to render_template(:create)
-      end
     end
 
     context 'with invalid attributes' do
@@ -32,11 +26,6 @@ RSpec.describe AnswersController, type: :controller do
           post :create,
                params: { question_id: question, answer: attributes_for(:answer, :invalid) }, format: :js
         end.not_to change(Answer, :count)
-      end
-
-      it 're-renders new view' do
-        post :create, params: { question_id: question, answer: attributes_for(:answer, :invalid) }, format: :js
-        expect(response).to render_template(:create)
       end
     end
   end
@@ -49,11 +38,6 @@ RSpec.describe AnswersController, type: :controller do
 
       it 'check that answer was deleted' do
         expect { delete :destroy, params: { id: answer }, format: :js }.to change(Answer, :count).by(-1)
-      end
-
-      it 'renders destroy view' do
-        delete :destroy, params: { id: answer },format: :js
-        expect(response).to render_template :destroy
       end
     end
 

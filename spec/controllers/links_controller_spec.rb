@@ -8,7 +8,8 @@ RSpec.describe LinksController, type: :controller do
   describe 'DELETE#delete' do
 
     before do
-      question.links.create( linkable: question, name: "youtube_link", url: "https://www.youtube.com/")
+      question.links.build( linkable: question, name: "Example link", url: "http://example.url")
+      question.save
     end
 
     context 'User is an author of the resource (question)' do

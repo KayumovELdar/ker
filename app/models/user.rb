@@ -1,12 +1,9 @@
 class User < ApplicationRecord
   has_many :questions
   has_many :answers
-
-  has_many :badge_ownings, dependent: :destroy
-  has_many :rewards, through: :badge_owning
-  has_many :votes, dependent: :destroy
-  has_many :comments, dependent: :destroy
-
+  has_many :votes
+  has_many :reward_ownings
+  has_many :rewards, through: :reward_ownings
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
 

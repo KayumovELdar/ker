@@ -18,14 +18,6 @@ feature 'Set best answer', %q{
       sign_in author
       visit question_path(answer.question)
     end
-
-    scenario 'set best answer' do
-      within "#answer_#{answer.id}" do
-        expect(page).not_to have_content 'Лучший ответ:'
-        click_on 'Выбрать лучшее'
-        expect(page).to have_content 'Лучший ответ:'
-      end
-    end
   end
 
   scenario "User tries to set best answer of other user's question", js: true do

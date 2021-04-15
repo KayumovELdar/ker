@@ -9,12 +9,10 @@ import * as ActiveStorage from "@rails/activestorage"
 import "channels"
 import "./answers.js"
 import "./questions.js"
-import "./votes.js"
-import "./comments.js"
-import "/comments"
+import 'utilities/rating.js'
 require("jquery")
+require("@nathanvda/cocoon")
 require("handlebars")
-import "cocoon"
 
 Rails.start()
 Turbolinks.start()

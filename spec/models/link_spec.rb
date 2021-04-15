@@ -9,16 +9,18 @@ RSpec.describe Link, type: :model do
   it { should_not allow_value('sddsfdssfddslmfsd;lkmdsf').for :url }
   it { should allow_value('https://github.com').for :url }
 
-  describe 'gist_url' do
-    let(:user) { create(:user) }
-    let(:question) { create(:question, user: user) }
 
-    let!(:link1) { create(:link, name: "gist_url",
-                                    url: "https://gist.github.com/kpkodil/2fab8b5c571ba048b67d3b8dc1ca7b1f",
-                                    linkable: question) }
-    let!(:link2) { create(:link, name: "youtube_url",
-                                    url: "https://www.youtube.com/",
-                                    linkable: question) }
+  let(:author) { create(:user) }
+  let(:question) { create(:question, user: author) }
+
+  describe 'gist_url?' do
+
+    let!(:link1) { create(:link, name: "A gist",
+                                  url: "https://gist.github.com/KayumovELdar/4e36eb9f97f59260c0f6d35e69ff6ea2",
+                                  linkable: question) }
+    let!(:link2) { create(:link, name: "Not a gist",
+                                  url: "https://blahblahblah.foo",
+                                  linkable: question) }
 
     it 'is a gist when the url is linked to gist' do
       expect(link1.gist_url?).to be_truthy
