@@ -5,7 +5,7 @@ class AnswersController < ApplicationController
   before_action :authenticate_user!
   before_action :find_question, only: :create
   before_action :find_answer, only: %i[destroy update set_best]
-
+  authorize_resource
   after_action :publish_answer, only: [:create]
   after_action :set_answer_gon, only: [:create]
 

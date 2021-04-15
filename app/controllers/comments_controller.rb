@@ -3,6 +3,7 @@ class CommentsController < ApplicationController
 
   before_action :authenticate_user!, only: %i[ create ]
   before_action :commentable,        only: %i[ create ]
+  authorize_resource
 
   def create
     respond_to do |format|

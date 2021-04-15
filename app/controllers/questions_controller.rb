@@ -4,7 +4,7 @@ class QuestionsController < ApplicationController
 
   before_action :authenticate_user!, except: %i[index show]
   before_action :load_question, only: %i[show edit update destroy ]
-
+  authorize_resource
   after_action :publish_question, only: [:create]
   after_action :set_question_gon, only: [:create]
   def index
