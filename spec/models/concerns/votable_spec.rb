@@ -1,51 +1,36 @@
 require 'rails_helper'
 
 shared_examples_for "votable" do
-  it { should have_many(:votes).dependent(:destroy) }
+  let(:author) { create(:user) }
 
-  let(:votable) { create(described_class.to_s.underscore.to_sym) }
-  let(:user1) { create(:user) }
-  let(:user2) { create(:user) }
-
-  it '#up' do
-    votable.up(user1)
-    expect(Vote.last.value).to eq 1
-    expect(Vote.last.user).to eq user1
-    expect(Vote.last.votable).to eq votable
+  klass = described_class.to_s.underscore.to_sym
+  case klass
+  when :question
+    let!(:model) { create(klass, user: author) }
+    context 'model is question' do
+      it 'count rating' do
+        count_rating
+      end
+    end
+  when :answer
+    let!(:model) { create(klass, user: author, question: create(:question, user: author)) }
+    context 'model is answer' do
+      it 'count rating' do
+        count_rating
+      end
+    end
   end
 
-  it 'tries to vote up twice' do
-    votable.up(user1)
-    votable.up(user1)
-    votable.down(user1)
-    expect(votable.rating).to eq 1
-  end
+  private
 
-  it '#down' do
-    votable.down(user1)
-    expect(Vote.last.value).to eq -1
-    expect(Vote.last.user).to eq user1
-    expect(Vote.last.votable).to eq votable
-  end
+  def count_rating
+    user = create(:user)
+    user2 = create(:user)
+    user3 = create(:user)
+    model.votes.build(value: -1, user: user).save!
+    model.votes.build(value: -1, user: user2).save!
+    model.votes.build(value: 1, user: user3).save!
 
-  it 'tries to vote down twice' do
-    votable.down(user1)
-    votable.down(user1)
-    expect(votable.rating).to eq -1
-  end
-
-  it '#rating' do
-    votable.up(user1)
-    votable.down(user1)
-    votable.up(user2)
-    expect(votable.rating).to eq 2
-  end
-  it 'rating after delete user' do
-    votable.up(user1)
-    votable.up(user2)
-    expect(votable.rating).to eq 2
-    votable.cancel_vote_of(user1)
-    expect(votable.rating).to eq 1
-
+    expect(model.rating).to eq -1
   end
 end

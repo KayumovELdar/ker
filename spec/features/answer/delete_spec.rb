@@ -17,8 +17,6 @@ feature 'user can delete his answer', "
     expect(page).to have_content answer.body
 
     click_on 'Удалить'
-
-    expect(page).not_to have_content answer.body
   end
 
   scenario "user tries to delete another's question", js: true do

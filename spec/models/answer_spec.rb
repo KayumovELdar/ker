@@ -3,17 +3,15 @@ require Rails.root.join "spec/models/concerns/votable_spec.rb"
 
 RSpec.describe Answer, type: :model do
   it_behaves_like "votable"
-  it_behaves_like "commentable"
+
   it { should belong_to(:question) }
   it { should belong_to(:user) }
+
   it { should have_many(:links).dependent(:destroy) }
+
   it { should validate_presence_of :title }
   it { should validate_presence_of :body }
   it { should accept_nested_attributes_for :links }
-
-  it 'have many attached files' do
-    expect(Answer.new.files).to be_an_instance_of (ActiveStorage::Attached::Many)
-  end
 
   describe 'check set_best method' do
     let(:user) { create(:user) }
@@ -39,5 +37,9 @@ RSpec.describe Answer, type: :model do
       answer3.set_best
       expect(Answer.where(best: :true).count).to eq 2
     end
+  end
+
+  it 'have many attached files' do
+    expect(Answer.new.files).to be_an_instance_of(ActiveStorage::Attached::Many)
   end
 end

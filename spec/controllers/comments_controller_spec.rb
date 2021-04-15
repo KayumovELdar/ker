@@ -1,57 +1,42 @@
 require 'rails_helper'
 
 RSpec.describe CommentsController, type: :controller do
-  let!(:user) { create(:user) }
-  let!(:question) { create(:question, user: user) }
-  let!(:comment) { create(:comment, user: user, commentable: question) }
+  let(:user) { create(:user) }
+  let(:author) { create(:user) }
+  let(:question) { create(:question, user: author) }
 
-  context '#POST create' do
-    context 'Authenticated user' do
-      before { login(user) }
+  describe 'POST#create' do
 
-      context 'With valid attributes' do
-        it 'set commentable' do
-          post :create, params: { question_id: question, comment: attributes_for(:comment) }, format: :js
-          expect(assigns(:commentable)).to eq question
-        end
+    before { login(user) }
 
-        it 'create comment in the database' do
-          expect do
-            post :create, params: { question_id: question, comment: attributes_for(:comment) }, format: :js
-          end.to change(question.comments, :count).by(1)
-        end
+    it 'associated with commentable' do
+      post :create, params:  valid_comment_params, format: :js
 
-        it 'render create' do
-          post :create, params: { question_id: question, comment: attributes_for(:comment) }, format: :js
-          expect(response).to render_template :create
-        end
-      end
+      expect(assigns(:comment)).to eq question.comments.first
+    end
 
-      context 'With invalid attributes' do
-        it 'finds commentable' do
-          post :create, params: { question_id: question, comment: attributes_for(:comment, :invalid) }, format: :js
-          expect(assigns(:commentable)).to eq question
-        end
+    context 'with valid attributes' do
 
-        it "doesn't create comment in the database" do
-          expect do
-            post :create, params: { question_id: question, comment: attributes_for(:comment, :invalid) }, format: :js
-          end.to_not change(question.comments, :count)
-        end
-
-        it 'renders create' do
-          post :create, params: { question_id: question, comment: attributes_for(:comment, :invalid) }, format: :js
-          expect(response).to render_template :create
-        end
+      it 'saves a new comment in the database' do
+        expect { post :create, params: valid_comment_params, format: :js }.to change(question.comments, :count).by(1)
       end
     end
 
-    context 'Unauthenticated user' do
-      it "doesn't create comment in the database" do
-        expect do
-          post :create, params: { question_id: question, comment: attributes_for(:comment) }, format: :js
-        end.to_not change(Comment, :count)
+    context 'with invalid attributes' do
+      it 'does not save the answer' do
+        expect { post :create, params: invalid_comment_params, format: :js }.to_not change(question.comments, :count)
       end
     end
+  end
+
+  private
+
+  def valid_comment_params
+    { comment: attributes_for(:comment), question_id: question.id }
+  end
+
+
+  def invalid_comment_params
+    { comment: attributes_for(:comment, :invalid), question_id: question.id }
   end
 end

@@ -7,7 +7,7 @@ feature 'user can see a question and answers to it', "
 " do
   given(:user) { create(:user) }
   given(:question) { create(:question, user: user) }
-  given!(:answers) { create_list(:answer, 5, question: question, user: user) }
+  given!(:answers) { create_pair(:answer, question: question, user: user) }
 
   scenario 'unauthenticated user sees a question and answers' do
     visit question_path(question)

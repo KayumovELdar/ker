@@ -7,16 +7,15 @@ feature 'User can add links to question', %q{
 } do
 
   given(:user) { create(:user) }
-  given!(:question) { create(:question, user: user) }
   given(:url1) {'https://www.yandex.ru'}
   given(:url2) {'https://www.youtube.com'}
 
   scenario 'User adds link when asks question', js: true do
     sign_in(user)
-    visit question_path(question)
+    visit new_question_path
 
-    fill_in 'Заголовок', with: 'Ответ_1'
-    fill_in 'Текст ответа', with: 'text text text'
+    fill_in 'Title', with: 'Test question'
+    fill_in 'Body', with: 'text text text'
 
     fill_in 'Link name', with: "My gist1"
     fill_in 'Url', with: url1
@@ -27,7 +26,7 @@ feature 'User can add links to question', %q{
       fill_in 'Link name', with: "My gist2"
       fill_in 'Url', with: url2
     end
-    click_on 'Завершить'
+    click_on 'Ask'
 
     expect(page).to have_link 'My gist1', href: url1
     expect(page).to have_link 'My gist2', href: url2
