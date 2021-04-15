@@ -1,0 +1,6 @@
+.questions
+  h2 Вопросы
+  .question-errors
+   = render @questions
+
+p= link_to 'Ask question', new_question_path

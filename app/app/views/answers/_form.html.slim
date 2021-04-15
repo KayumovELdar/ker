@@ -1,0 +1,17 @@
+.answer-errors
+  =render 'shared/errors', resource: @answer
+
+= form_with model: [@question, @answer], class: 'new-answer', local: false do |f|
+  br= f.label :title, "Заголовок"
+  br= f.text_field :title
+  br= f.label :body, "Текст ответа"
+  br= f.text_area :body
+  br= f.label :files
+  br= f.file_field :files, multiple: true, direct_upload: true
+  p Links:
+  div id="links"
+    = f.fields_for :links do |link|
+      = render 'shared/link_fields', f: link
+    = link_to_add_association 'add link', f, :links, after: true,  partial: 'shared/link_fields'
+
+  br= f.submit "Завершить"
