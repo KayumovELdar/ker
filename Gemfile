@@ -24,6 +24,8 @@ gem 'google-cloud-storage', '~> 1.8', require: false
 gem "cocoon"
 gem 'handlebars'
 gem "gon"
+gem 'cancancan'
+
 
 # Use Redis adapter to run Action Cable in production
 # gem 'redis', '~> 4.0'
