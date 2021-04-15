@@ -1,7 +1,24 @@
-<li id="answer-id-{{ answer.id }}" >
-        <div id="answer-{{answer.id}}-vote" >
-            <p class="total-score">0</p>
-            <br>
+<div data-answer-id={{{ answer.id }}}>
+  <p>{{{answer.body}}}
+    <div data-errors-answer-id={{{answer.id}}}>
+    </div>
+      <p>
+        {{{links}}}
+      </p>
+      <p>
+        {{{files}}}
+      </p>
+      <div class="rating">
+        <div class='rating-result'>
+          Rating: 0
         </div>
-            <p>{{ answer.title }}</p>
-</li>
+      <p>
+        <a class="vote" data-type="json" data-remote="true" rel="nofollow" data-method="post" href="/answers/{{{answer.id}}}/vote_for">vote for</a>
+      </p>
+      <p>
+        <a class="vote" data-type="json" data-remote="true" rel="nofollow" data-method="post" href="/answers/{{{answer.id}}}/vote_against">vote against</a>
+      </p>
+      <div class="rating-errors"></div>
+    </div>
+  </p>
+</div>

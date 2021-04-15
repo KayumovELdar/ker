@@ -1,33 +1,29 @@
 class QuestionsController < ApplicationController
-
   include Voted
 
-  before_action :authenticate_user!, except: %i[index show]
-  before_action :load_question, only: %i[show edit update destroy ]
+  before_action :authenticate_user!, except: %i[index show create update destroy]
+  before_action :question, except: %i[create]
+  after_action :publish_question, only: %i[create]
 
-  after_action :publish_question, only: [:create]
-  after_action :set_question_gon, only: [:create]
   def index
     @questions = Question.all
   end
 
   def show
-    @answer = @question.answers.new
-    @answer.links.new
-    @comment = @question.comments.build(user: current_user)
-  end
-
-  def new
-    @question.links.build
-    @question.build_badge
+    @answer = Answer.new
+    @answer.links.build
+    @comment = Comment.new
   end
 
   def edit; end
 
-  def create
-    @question = Question.new(question_params)
-    @question.user = current_user
+  def new
+    @question.links.build
+    @question.build_reward
+  end
 
+  def create
+    @question = current_user.questions.build(question_params)
     if @question.save
       redirect_to @question, notice: 'Your question successfully created.'
     else
@@ -40,7 +36,7 @@ class QuestionsController < ApplicationController
   end
 
   def destroy
-    if current_user.author?(@question)
+    if current_user&.author?(@question)
       @question.destroy
       redirect_to questions_path, notice: 'Your question was successfully deleted!'
     else
@@ -50,23 +46,26 @@ class QuestionsController < ApplicationController
 
   private
 
-  def load_question
-    @question = Question.with_attached_files.find(params[:id])
+  def question
+    @question ||= params[:id] ? Question.with_attached_files.find(params[:id]) : Question.new
   end
 
   def question_params
-    params.require(:question).permit(:title, :body,
-                                      files: [],
-                                      links_attributes: [:name, :url],
-                                      badge_attributes: [:title, :image_url] )
+    params.require(:question).permit(:title, :body, files: [], links_attributes: [:name, :url], reward_attributes: [:title, :img_url])
+  end
+
+  def questions
+    Question.all.map do |question|
+      [question.id, question.title]
+    end
   end
 
   def publish_question
     return if @question.errors.any?
-    ActionCable.server.broadcast('questions',{ question: @question, user_id: current_user.id })
-  end
-
-  def set_question_gon
-    gon.question_id = question.id
+    ActionCable.server.broadcast(
+      'questions',
+      title: @question.title,
+      id: @question.id
+    )
   end
 end

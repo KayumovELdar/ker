@@ -1,54 +1,61 @@
 
 - if answer.persisted?
-    div id = "answer_#{answer.id}"
+    div data-answer-id="#{answer.id}"
       -if answer.best
         | Лучший ответ:
       p="Пользователь #{answer.user.email}"
       p= answer.title
       p= answer.body
-      p="рейтинг #{answer.rating}"
-      = render 'shared/vote', resource: answer
+      div data-errors-answer-id="#{answer.id}"
 
-      .links
-        p Links:
-        ul
-          - answer.links.each do |link|
-            div data-link-id="#{link.id}"
-              - if link.gist_url?
-                script src="#{link.url}.js" width="300" height="300"
-              - else
-                li= link_to link.name, link.url
-              - if current_user&.resource_author?(answer)
-                li= button_to 'Delete link', link_path(answer, link: link), remote: true, method: :delete
+      .rating
+        = render 'shared/rating', resource: answer
+        .rating-errors
+      - if answer.links.present?
+        .answer-links
+          p Links:
+          ul
+            - answer.links.each do |l|
+              div data-link-id="#{l.id}"
+                - if l.gist_url?
+                  script src="#{l.url}.js" width="300" height="300"
+                - else
+                  li= link_to l.name, l.url, target: :_blank
+                - if current_user&.author?(answer)
+                  li= button_to 'Delete link', link_path(answer, link: l), remote: true, method: :delete
 
-      -if answer.files.attached?
-        div class='attachments'
-        -answer.files.each do |file|
-          div id="file-#{file.id}"
-            p= link_to file.filename.to_s, url_for(file)
-            - if current_user&.author?(answer)
-              = link_to 'Удалить файл ответа', file_path(file), method: :delete, remote: true
-
+      - if answer.files.attached?
+        - answer.files.each do |file|
+          div data-attached-file-id="#{file.id}"
+            p= link_to file.filename.to_s, url_for(file), target: :_blank
+            = button_to 'Delete file', attachment_path(answer, file: file), remote: true, method: :delete
+      .comments
+        - if answer.comments.present?
+          = "Comments:"
+          = render 'comments/comments', resource: answer
+      .new-comment
+        - if current_user
+          - @comment = answer.comments.build(user: current_user)
+          = render 'comments/new', resource: answer
       - if current_user&.author?(answer.question) && !answer.best
-        p= link_to 'Выбрать лучшее', set_best_answer_path(answer),method: :patch, remote: true
+        p= link_to 'Выбрать лучшее', set_best_answer_path(answer),remote: true,method: :patch
         ="|"
       -if current_user&.author?(answer)
-        = link_to 'Удалить', answer_path(answer), method: :delete
+        div data-answer-id="#{answer.id}"
+        = link_to 'Удалить', answer_path(answer),remote: true, method: :delete, class: 'delete-answer-link', data: { confirm: 'Sure?', nswer_id: answer.id }
         ="|"
         = link_to 'Обновить', '#', class: 'edit-answer-link',data: {answer_id: answer.id}
         =form_with model: answer,class: 'hidden', html:{ id: "edit-answer-#{answer.id}"}, local: false do |f|
-          = f.label :title, 'Заголовок'
-          = f.text_field :title
-          = f.label :body, 'Ваш ответ: '
-          = f.text_area :body, id: :answer_body
-          = f.label :files
-          = f.file_field :files, multiple: true
-          #links
-            = f.fields_for :links do |l|
-            .add_link
-              = link_to_add_association 'add link', f, :links, partial: 'shared/link_fields'
-          = f.submit 'Save answer'
-          =f.submit 'Сохранить'
-          = render "comments/comments", commentable: answer
 
-          = render "comments/new", commentable: answer
+          br=f.label :title, 'Ваш заголовок:'
+          br=f.text_area :title
+          br=f.label :body, 'Ваш ответ:'
+          br=f.text_area :body
+          br= f.label :files
+          br= f.file_field :files, multiple: true
+          p Links:
+          div id="links"
+            = f.fields_for :links do |link|
+              = render 'shared/link_fields', f: link
+            = link_to_add_association 'add links', f, :links, after: true, partial: 'shared/link_fields'
+          =f.submit 'Сохранить'

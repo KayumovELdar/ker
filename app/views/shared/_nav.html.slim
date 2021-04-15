@@ -1,8 +1,9 @@
 -if user_signed_in?
   b= "Добро пожаловать "
-  br= link_to "Выход", destroy_user_session_path, method: :delete
-  br= link_to 'Your badges', badges_user_path(current_user)
+  = link_to "Выход", destroy_user_session_path, method: :delete
 -else
   = link_to "Регистрация", new_user_registration_path
   ="|"
   = link_to "Вход", new_user_session_path
+  ="|"
+  = link_to "Rewards", rewards_path

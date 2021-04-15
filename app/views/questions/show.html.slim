@@ -1,34 +1,47 @@
--=render "shared/errors", resource: @answer
+.question data-question-id="#{@question.id}"
+  h1= @question.title
+  p= @question.body
+  .rating
 
-h1= @question.title
-p= @question.body
-.links
-  p Links:
-  ul
-    - @question.links.each do |link|
-      div data-link-id="#{link.id}"
-        - if link.gist_url?
-          script src="#{link.url}.js" width="300" height="300"
-        - else
-          li= link_to link.name, link.url
-        - if current_user&.resource_author?(answer)
-          li= button_to 'Delete link', link_path(answer, link: link), remote: true, method: :delete
-- if current_user&.author?(@question)
-  p= link_to 'Delete question',
-          question_path(@question),
-          method: :delete,
-          data: { confirm: 'Are you sure?' }
-= render "comments/comments", commentable: @question
-= render "comments/new", commentable: @question
+    = render 'shared/rating', resource: @question
+    .rating-errors
+  - if @question.reward.present?
+    p Reward:
+    p= @question.reward.title
+    = image_tag(@question.reward.img_url, size: "20x20")
+  .question-links
+    - if @question.links.present?
+      p Links:
+      ul
+        - @question.links.each do |l|
+          div data-link-id="#{l.id}"
+            - if l.gist_url?
+              script src="#{l.url}.js" width="300" height="300"
+            - else
+              li= link_to l.name, l.url, target: :_blank
+            - if current_user&.author?(@question)
+              li= button_to 'Delete link', link_path(@question, link: l), remote: true, method: :delete
+
+  - if @question.files.attached?
+    - @question.files.each do |file|
+      div data-attached-file-id="#{file.id}"
+        p= link_to file.filename.to_s, url_for(file), target: :_blank
+        = button_to 'Delete file', attachment_path(@question, file: file), remote: true, method: :delete
+
+  - if current_user&.author?(@question)
+    p= link_to 'Delete question',
+            question_path(@question),
+            method: :delete,
+            data: { confirm: 'Are you sure?' }
+  .comments
+    - if @question.comments.present?
+      = "Comments:"
+      = render 'comments/comments', resource: @question
+  .new-comment
+    - if current_user
+      = render 'comments/new', resource: @question
 h2= "Ответы пользователей"
--if @question.files.attached?
-  -@question.files.each do |file|
-    p= link_to file.filename.to_s, url_for(file)
-- if @question.badge.present?
-  div class="badge"
-  = "Badge for best answer:"
-  = image_tag(@question.badge.image_url, size: "50x50")
-  .answers
-    = render @question.answers
+.answers
+  = render @question.answers
 - if current_user.present?
-  p= render 'answers/form'
+  = render 'answers/form'

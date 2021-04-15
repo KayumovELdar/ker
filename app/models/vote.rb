@@ -1,14 +1,15 @@
 class Vote < ApplicationRecord
-  belongs_to :user
   belongs_to :votable, polymorphic: true
+  belongs_to :user
+  validates :user_id, uniqueness: { scope: [:votable_type, :votable_id] }
 
-  validates :value, presence: true, numericality: {equal: -> { -1 || 1}}
-
-  validate :cannot_author
+  validate :voter_is_author
 
   private
 
-  def cannot_author
-    errors.add(:user, 'can not be an author') if user&.author?(votable)
+  def voter_is_author
+    if votable&.user == user
+      errors.add(:user, 'can not vote for his resource')
+    end
   end
 end

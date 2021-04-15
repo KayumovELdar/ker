@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_04_03_031144) do
+ActiveRecord::Schema.define(version: 2021_04_15_114747) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -55,29 +55,22 @@ ActiveRecord::Schema.define(version: 2021_04_03_031144) do
     t.index ["user_id"], name: "index_answers_on_user_id"
   end
 
-  create_table "badge_ownings", force: :cascade do |t|
+  create_table "comments", force: :cascade do |t|
+    t.string "body", null: false
+    t.string "commentable_type", null: false
+    t.bigint "commentable_id", null: false
     t.bigint "user_id", null: false
-    t.bigint "badge_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["badge_id"], name: "index_badge_ownings_on_badge_id"
-    t.index ["user_id"], name: "index_badge_ownings_on_user_id"
-  end
-
-  create_table "badges", force: :cascade do |t|
-    t.bigint "question_id", null: false
-    t.string "title"
-    t.text "image_url"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["question_id"], name: "index_badges_on_question_id"
+    t.index ["commentable_type", "commentable_id"], name: "index_comments_on_commentable"
+    t.index ["user_id"], name: "index_comments_on_user_id"
   end
 
   create_table "links", force: :cascade do |t|
-    t.string "name"
-    t.string "url"
     t.string "linkable_type"
     t.bigint "linkable_id"
+    t.string "name"
+    t.string "url"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["linkable_type", "linkable_id"], name: "index_links_on_linkable"
@@ -90,6 +83,24 @@ ActiveRecord::Schema.define(version: 2021_04_03_031144) do
     t.datetime "updated_at", precision: 6, null: false
     t.bigint "user_id"
     t.index ["user_id"], name: "index_questions_on_user_id"
+  end
+
+  create_table "reward_ownings", force: :cascade do |t|
+    t.bigint "reward_id"
+    t.bigint "user_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["reward_id"], name: "index_reward_ownings_on_reward_id"
+    t.index ["user_id"], name: "index_reward_ownings_on_user_id"
+  end
+
+  create_table "rewards", force: :cascade do |t|
+    t.string "title", null: false
+    t.string "img_url", null: false
+    t.bigint "question_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["question_id"], name: "index_rewards_on_question_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -105,10 +116,10 @@ ActiveRecord::Schema.define(version: 2021_04_03_031144) do
   end
 
   create_table "votes", force: :cascade do |t|
-    t.integer "value"
-    t.bigint "user_id"
-    t.string "votable_type"
-    t.bigint "votable_id"
+    t.integer "value", null: false
+    t.string "votable_type", null: false
+    t.bigint "votable_id", null: false
+    t.bigint "user_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["user_id"], name: "index_votes_on_user_id"
@@ -119,7 +130,10 @@ ActiveRecord::Schema.define(version: 2021_04_03_031144) do
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "answers", "questions"
   add_foreign_key "answers", "users"
-  add_foreign_key "badges", "questions"
+  add_foreign_key "comments", "users"
   add_foreign_key "questions", "users"
+  add_foreign_key "reward_ownings", "rewards"
+  add_foreign_key "reward_ownings", "users"
+  add_foreign_key "rewards", "questions"
   add_foreign_key "votes", "users"
 end

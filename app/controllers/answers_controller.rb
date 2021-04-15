@@ -1,30 +1,18 @@
 class AnswersController < ApplicationController
-
   include Voted
 
-  before_action :authenticate_user!
-  before_action :find_question, only: :create
-  before_action :find_answer, only: %i[destroy update set_best]
+  before_action :authenticate_user!, only: %i[create update destroy]
+  before_action :answer, except: %i[create]
 
-  after_action :publish_answer, only: [:create]
-  after_action :set_answer_gon, only: [:create]
+  after_action :publish_answer, only: %i[create]
 
   def create
-    @answer = @question.answers.new(answer_params)
-    @answer.user = current_user
+    @answer = current_user.answers.build(answer_params)
+    @answer.question = question
     @answer.save
-
-    respond_to do |format|
-      if @answer.save
-        format.json { render json: @answer }
-     else
-        format.json do
-          render json: @answer.errors.full_messages, status: :unprocessable_entity
-        end
-      end
-    end
+    @comment = Comment.new
+    @answer.save
   end
-
 
   def update
     if current_user&.author?(@answer)
@@ -38,30 +26,42 @@ class AnswersController < ApplicationController
   end
 
   def set_best
-    @answer.set_best! if current_user&.author?(@answer.question)
+    @answer.set_best if current_user&.author?(@answer.question)
   end
 
   private
 
-  def find_answer
-    @answer = Answer.with_attached_files.find(params[:id])
+  def answer
+    @answer ||= params[:id] ? Answer.find(params[:id]) : Answer.new
   end
 
-  def find_question
-    @question = Question.find(params[:question_id])
+  def question
+    @question ||= Question.find(params[:question_id])
   end
 
-  def answer_params
-    params.require(:answer).permit(:title, :body, files: [], links_attributes: [:name, :url])
+  def answer_files_array
+    @answer.files.map do |file|
+      [file.filename.to_s , url_for(file),file.id]
+    end
+  end
+
+  def answer_links_array
+    @answer.links.map do |link|
+      [link.name, link.url]
+    end
   end
 
   def publish_answer
     return if @answer.errors.any?
     ActionCable.server.broadcast(
-      "questions/#{params[:question_id]}/answers",answer: @answer, user_id: current_user.id)
+      "questions/#{params[:question_id]}/answers",
+        answer: @answer,
+        files: answer_files_array,
+        links: answer_links_array
+    )
   end
 
-  def set_answer_gon
-    gon.answer_id=answer.id
+  def answer_params
+    params.require(:answer).permit(:title, :body, files: [],links_attributes: [:name, :url, :_destroy])
   end
 end
