@@ -44,6 +44,11 @@ class Ability
     can :cancel_vote, [Answer, Question] do |votable|
       user.author?(votable)
     end
+
+    can :me, User do |profile|
+      profile.id == user.id
+    end
+
     can :set_best, Answer do  |answer|
       user.author?(answer.question)
     end
