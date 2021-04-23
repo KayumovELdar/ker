@@ -1,16 +1,15 @@
 class Api::V1::QuestionsController < Api::V1::BaseController
-  before_action :set_question, only: %i[answers]
+    before_action :set_question, only: %i[answers show]
 
   def index
+    authorize! :index, Question
     @questions = Question.all
-    authorize! :index, current_resource_owner
-    render json: @questions
+    render json: @questions, each_serializer: QuestionsSerializer, root: "questions"
   end
 
-  def answers
-    @answers = @question.answers
-    authorize! :answers, current_resource_owner
-    render json: @answers, each_serializer: AnswerSerializer, root: "answers"
+  def show
+    authorize! :show, @question
+    render json: @question, serializer: QuestionSerializer
   end
 
   private
