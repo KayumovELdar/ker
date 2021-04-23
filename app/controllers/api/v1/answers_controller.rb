@@ -1,5 +1,5 @@
 class Api::V1::AnswersController < Api::V1::BaseController
-  before_action :set_question, only: %i[index]
+  before_action :set_question, only: %i[index create]
   before_action :set_answer, only: %i[show]
 
   def index
@@ -13,6 +13,15 @@ class Api::V1::AnswersController < Api::V1::BaseController
     render json: @answer, serializer: AnswerSerializer
   end
 
+  def create
+    authorize! :create, Answer
+    @answer = current_resource_owner.answers.build(answer_params)
+    @answer.question = @question
+    if @answer.save
+      render json: @answer, serializer: AnswerSerializer
+    end
+  end
+
   private
 
   def set_question
@@ -21,5 +30,11 @@ class Api::V1::AnswersController < Api::V1::BaseController
 
   def set_answer
     @answer ||= Answer.find(params[:id])
+  end
+
+  def answer_params
+    params.require(:answer).permit(:body,
+                                   files: [],
+                                   links_attributes: [:name, :url])
   end
 end
