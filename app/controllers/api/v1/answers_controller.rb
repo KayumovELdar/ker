@@ -1,6 +1,6 @@
 class Api::V1::AnswersController < Api::V1::BaseController
   before_action :set_question, only: %i[index create]
-  before_action :set_answer, only: %i[show destroy]
+  before_action :set_answer, only: %i[show destroy update]
 
   def index
     authorize! :index, @question
@@ -19,6 +19,15 @@ class Api::V1::AnswersController < Api::V1::BaseController
     @answer.question = @question
     if @answer.save
       render json: @answer, serializer: AnswerSerializer
+    end
+  end
+
+  def update
+    authorize! :update, @answer
+    if @answer.update(answer_params)
+      render json: @answer, serializer: AnswerSerializer
+    else
+      render json: { message: 'error update', status: 422}
     end
   end
 
