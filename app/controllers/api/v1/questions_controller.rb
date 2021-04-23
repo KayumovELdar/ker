@@ -1,5 +1,5 @@
 class Api::V1::QuestionsController < Api::V1::BaseController
-    before_action :set_question, only: %i[answers show]
+    before_action :set_question, only: %i[answers show destroy]
 
   def index
     authorize! :index, Question
@@ -20,6 +20,11 @@ class Api::V1::QuestionsController < Api::V1::BaseController
     end
   end
 
+  def destroy
+    authorize! :destroy, @question
+    @question.destroy
+    render json: { message: "question deleted", status: 200 }
+  end
   private
 
   def set_question

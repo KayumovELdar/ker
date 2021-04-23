@@ -1,6 +1,6 @@
 class Api::V1::AnswersController < Api::V1::BaseController
   before_action :set_question, only: %i[index create]
-  before_action :set_answer, only: %i[show]
+  before_action :set_answer, only: %i[show destroy]
 
   def index
     authorize! :index, @question
@@ -21,6 +21,13 @@ class Api::V1::AnswersController < Api::V1::BaseController
       render json: @answer, serializer: AnswerSerializer
     end
   end
+
+  def destroy
+   authorize! :destroy, @answer
+   @answer.destroy
+   render json: { message: "answer deleted", status: 200 }
+ end
+
 
   private
 
