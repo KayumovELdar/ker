@@ -45,7 +45,7 @@ class Ability
       user.author?(votable)
     end
 
-    can %i[me], User do |profile|
+    can :me, User do |profile|
       profile.id == user.id
     end
 
