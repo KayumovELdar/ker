@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  use_doorkeeper
   devise_for :users
 
   concern :votable do
@@ -6,6 +7,18 @@ Rails.application.routes.draw do
       post :vote_for
       post :vote_against
       delete :cancel_vote
+    end
+  end
+
+  namespace :api do
+    namespace :v1 do
+      resources :profiles, only: [:index] do
+        get :me, on: :collection
+      end
+
+      resources :questions, only: %i[index show create destroy update] do
+        resources :answers, only: %i[index show create destroy update], shallow: true
+      end
     end
   end
 
