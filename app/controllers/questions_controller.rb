@@ -3,6 +3,7 @@ class QuestionsController < ApplicationController
 
   before_action :authenticate_user!, except: %i[index show create update destroy]
   before_action :question, except: %i[create]
+  before_action :subscribe, only: %i[show]
   authorize_resource
   after_action :publish_question, only: %i[create]
 
@@ -46,6 +47,10 @@ class QuestionsController < ApplicationController
   end
 
   private
+
+  def subscribe
+    @subscribe = @question.subscribes.find_by(user_id: current_user.id)
+  end
 
   def question
     @question ||= params[:id] ? Question.with_attached_files.find(params[:id]) : Question.new
