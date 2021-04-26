@@ -4,6 +4,7 @@ class Answer < ApplicationRecord
 
   belongs_to :question
   belongs_to :user
+  after_create :answer_alert
 
   has_many :links, dependent: :destroy, as: :linkable
 
@@ -19,5 +20,11 @@ class Answer < ApplicationRecord
       update!(best: true)
       question.reward&.update(user: user)
     end
+  end
+
+  private
+
+  def answer_alert
+    NewAnswerAlertJob.perform_later(question)
   end
 end

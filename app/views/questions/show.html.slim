@@ -2,9 +2,14 @@
   h1= @question.title
   p= @question.body
   .rating
-
     = render 'shared/rating', resource: @question
     .rating-errors
+
+  -if current_user
+    - if @subscribe
+      = link_to 'Unsubscribe', subscribe_path(@subscribe), method: :delete
+    - else
+      = link_to 'Subscribe', question_subscribes_path(@question), method: :post
   - if @question.reward.present?
     p Reward:
     p= @question.reward.title

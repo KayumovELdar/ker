@@ -4,6 +4,7 @@ class User < ApplicationRecord
   has_many :votes
   has_many :reward_ownings
   has_many :rewards, through: :reward_ownings
+  has_many :subscribes, dependent: :destroy
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
 
